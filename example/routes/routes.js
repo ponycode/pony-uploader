@@ -9,13 +9,13 @@
     var config = require('pony-config');
     var fs = require('fs');
 
-    var s3UploadOptions = {
+    var ponyUploaderOptions = {
         bucket: config.get("s3.bucket"),
         s3AccessKeyId: config.get("s3.accessKey"),
         s3AccessKeySecret: config.get("s3.secretKey")
     };
 
-    var s3Upload = require('../../index')( s3UploadOptions );
+    var ponyUploader = require('../../index')( ponyUploaderOptions );
 
 
     module.exports = function( app ){
@@ -34,7 +34,6 @@
             var image = new Image();
             image.uploadedBy = req.user;
             image.s3Key = (new Date().getTime()/1000) + "-" + filename;
-            image.url =
             image.width = width;
             image.height = height;
 
@@ -46,7 +45,7 @@
                 completeUrl: req.protocol + '://' + req.get('host') + "/uploads/" + image.id + "/complete"
             };
 
-            s3Upload.getS3UploadSignature( upload, function( error, result ){
+            ponyUploader.getS3UploadSignature( upload, function( error, result ){
                 if( error ){
                     res.status( 500 ).send( "Error signing file for upload" );
                     return;
