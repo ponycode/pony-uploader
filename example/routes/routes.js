@@ -10,7 +10,7 @@
     var fs = require('fs');
 
     var s3UploadOptions = {
-        bucket: "My-Bucket",
+        bucket: config.get("s3.bucket"),
         s3AccessKeyId: config.get("s3.accessKey"),
         s3AccessKeySecret: config.get("s3.secretKey")
     };
@@ -26,41 +26,68 @@
             var filename = req.query['filename'];
             var filetype = req.query['filetype'];
             var filesize = req.query['filesize'];
+            var width = req.query['width'] || 0;
+            var height = req.query['height'] || 0;
 
             filename = _sanitizeFilename( filename );
 
             var image = new Image();
             image.uploadedBy = req.user;
             image.s3Key = (new Date().getTime()/1000) + "-" + filename;
+            image.url =
+            image.width = width;
+            image.height = height;
 
-            image.save( function( error, image ){
+            var upload = {
+                key: image.s3Key,
+                filename: filename,
+                filetype: filetype,
+                filesize: filesize,
+                completeUrl: req.protocol + '://' + req.get('host') + "/uploads/" + image.id + "/complete"
+            };
+
+            s3Upload.getS3UploadSignature( upload, function( error, result ){
                 if( error ){
-                    console.error( "Error creating image: ", error );
-                    res.status( 500).send( "Error creating image" );
+                    res.status( 500 ).send( "Error signing file for upload" );
                     return;
                 }
 
-                var upload = {
-                    key: image.s3Key,
-                    filename: filename,
-                    filetype: filetype,
-                    filesize: filesize,
-                    completeUrl: req.protocol + '://' + req.get('host') + "/uploads/" + image.id + "/complete"
-                };
-
-                s3Upload.getS3UploadSignature( upload, function( error, result ){
-                    if( error ){
-                        res.status( 500 ).send( "Error signing file for upload" );
+                image.url = result.publicUrl;
+                image.save( function( error, image ) {
+                    if (error) {
+                        console.error("Error creating image: ", error);
+                        res.status(500).send("Error creating image");
                         return;
                     }
 
-                    res.send( result );
+                    res.send(result);
                 });
             });
+
         });
 
         app.get( "/uploads/:imageId/complete", function( req, res ){
-            res.send( req.params.imageId );
+            Image.findById( req.params.imageId, function( error, image ){
+                if( error ){
+                    res.status( 404).send({ status: "error", "message": "Image not found" });
+                    return;
+                }
+
+                image.complete = true;
+                image.save( function( error, image ){
+                    if( error ){
+                        res.status( 404).send({ status: "error", "message": "Error saving image" });
+                        return;
+                    }
+
+                    res.send({
+                        status: "success",
+                        url: image.url,
+                        width: image.width,
+                        height: image.height
+                    });
+                });
+            });
         });
     };
 

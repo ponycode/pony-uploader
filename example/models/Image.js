@@ -9,7 +9,9 @@
         url: { type: String },
         s3Key: { type: String },
         complete: { type: Boolean, required: true, default: false },
-        dateUploaded: { type: Date, required: true, default: Date.now }
+        dateUploaded: { type: Date, required: true, default: Date.now },
+        width: { type: Number, required: true },
+        height: { type: Number, required: true }
     });
 
     mongoose.model( 'Image', ImageSchema );

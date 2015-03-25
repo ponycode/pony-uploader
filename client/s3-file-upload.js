@@ -1,6 +1,258 @@
+;var s3FileUpload = ( function( $, window, document, undefined ){
+
+    function _completeUpload( completeUrl, callback ){
+        var req = {
+            url: completeUrl
+        };
+
+        _getJSON( req, function( error, jsonResponse ){
+            if( error ){
+                callback( error, false );
+                return;
+            }
+
+            callback( false, jsonResponse );
+        });
+    }
+
+    function _getSignedUpload( signatureUrl, fileData, callback ){
+        var req = {
+          url: signatureUrl += "?filename=" + fileData.filename + "&filesize=" + fileData.filesize + "&filetype=" + fileData.filetype + "&width=" + fileData.width + "&height=" + fileData.height
+        };
+
+        _getJSON( req, function( error, jsonResponse ){
+            if( error ){
+                callback( error, false );
+                return;
+            }
+
+            if( jsonResponse && jsonResponse.uploadUrl && jsonResponse.completeUrl ){
+                callback( false, jsonResponse );
+            }else{
+                callback( new Error( "Error signing upload: no data returned" ), false );
+            }
+        });
+    }
+
+    function _uploadToS3( uploadUrl, uploadData, progressCallback, callback ){
+        var xhr = _createCORSRequest( 'PUT', uploadUrl );
+        if( !xhr ){
+            console.error( "CORS is not support." );
+            callback( new Error( "File uploads are not supported by this browser." ) );
+            return;
+        }
+
+        xhr.onload = function(){
+            if( xhr.status === 200 ){
+                callback( false, true );
+            }else{
+                callback( new Error( "A file upload error occurred: " + xhr.status ), false );
+            }
+        };
+
+        xhr.onerror = function(){
+            callback( new Error( "A file upload error occurred: " + xhr.status ), false );
+        };
+
+        xhr.upload.onprogress = function( e ){
+            var percentLoaded = Math.round(( e.loaded / e.total ) * 100 );
+            if( progressCallback ) progressCallback( percentLoaded );
+        };
+
+        xhr.setRequestHeader( 'Content-Type', uploadData.filetype );
+        xhr.setRequestHeader( 'x-amz-acl', 'public-read' );
+        return xhr.send( uploadData.blob );
+    }
+
+    function _getJSON( request, callback ){
+        var xhr = _createCORSRequest( 'GET', request.url );
+        if( !xhr ){
+            console.error( "XHR is not support." );
+            callback( new Error( "File uploads are not supported by this browswer." ) );
+            return;
+        }
+
+        xhr.onload = function(){
+            if( xhr.status === 200 ){
+                var json = false;
+                try{
+                    json = JSON.parse( this.responseText );
+                }catch( e ){
+                    console.error( "Error parsing json response: ", this.responseText );
+                }
+                callback( false, json );
+            }else{
+                callback( new Error( "An HTTP error occurred: " + xhr.status ) );
+            }
+        };
+
+        xhr.onerror = function(){
+            callback( new Error( "An error occurred [" + xhr.status + "]: " + xhr.responseText ) );
+        };
+
+        xhr.upload.onprogress = function( e ){
+            var percentLoaded = Math.round(( e.loaded / e.total ) * 100 );
+            if( request.progressCallback ) request.progressCallback( percentLoaded );
+        };
+
+        return xhr.send();
+    }
+
+    function _createCORSRequest( method, url ){
+        var xhr;
+        xhr = new XMLHttpRequest();
+        if( xhr.withCredentials != null ){
+            xhr.open( method, url, true );
+        }else if( typeof XDomainRequest !== "undefined" ){
+            xhr = new XDomainRequest();
+            xhr.open( method, url );
+        } else {
+            xhr = null;
+        }
+        return xhr;
+    }
+
+    return{
+        getSignedUpload: _getSignedUpload,
+        uploadToS3: _uploadToS3,
+        completeUpload: _completeUpload
+    };
+
+})( jQuery, window, document );
+
+
+
+;var s3FileResize = ( function( $, window, document, undefined ){
+
+    function _resizeFile( file, maxWidth, maxHeight, callback ){
+        var fileLoader = new FileReader();
+        var canvas = document.createElement('canvas');
+        var imageObj = new Image();
+        var dataType = "image/png";
+
+        if( file.type.match('image.*') ){
+            fileLoader.readAsDataURL( file );
+        } else {
+            callback( new Error("The input file is not an image."), false );
+        }
+
+        fileLoader.onload = function(){
+            imageObj.src = this.result; // triggers image load
+        };
+
+        fileLoader.onabort = function(){
+            callback( new Error("The file read was aborted."), false );
+        };
+
+        fileLoader.onerror = function(){
+            callback( new Error("An error occured while reading the file."), false );
+        };
+
+        imageObj.onload = function(){
+            var image = this;
+            if( image.width == 0 || image.height == 0 ){
+                callback( new Error("The image is empty."), false );
+            }else{
+
+                var newWidth = 0;
+                var newHeight = 0;
+
+                if( this.width > maxWidth || image.height > maxHeight ){
+                    var widthRatio = image.width / maxWidth;
+                    var heightRatio = image.height / maxHeight;
+
+                    if( widthRatio < heightRatio ){
+                        newWidth = image.width / heightRatio;
+                        newHeight = maxHeight;
+                    }else{
+                        newWidth = maxWidth
+                        newHeight = image.height / widthRatio;
+                    }
+                }else{
+                    newWidth = image.width;
+                    newHeight = image.height;
+                }
+
+                var context = canvas.getContext('2d');
+                canvas.id = "hiddenCanvas";
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                canvas.style.visibility   = "hidden";
+                document.body.appendChild( canvas );
+
+                context.clearRect( 0, 0, newWidth, newHeight );
+                context.drawImage( imageObj, 0, 0, image.width, image.height, 0, 0, newWidth, newHeight );
+
+                // for debugging
+                //var img = document.createElement("img");
+                //img.src = canvas.toDataURL();
+                //document.body.appendChild( img );
+
+                _dataUriToBlob( canvas.toDataURL( dataType ), dataType, function( error, blob ){
+
+                    document.body.removeChild( canvas );
+
+                    if( error ){
+                        callback( error, false );
+                        return;
+                    }
+
+                    var result = {
+                        blob: blob,
+                        width: newWidth,
+                        height: newHeight,
+                        originalWidth: image.width,
+                        originalHeight: image.height,
+                        dataType: dataType,
+                        originalDataType: file.type
+                    };
+
+                    callback( false, result );
+                });
+            }
+        };
+
+        imageObj.onabort = function() {
+            callback( new Error("Image load was aborted."), result );
+        };
+
+        imageObj.onerror = function() {
+            callback( new Error("An error occured while loading image."), result );
+        };
+    }
+
+    function _dataUriToBlob( dataURI, dataType, callback ){
+        if( typeof dataURI !== 'string' ){
+            throw new Error('Invalid argument: dataURI must be a string');
+        }
+
+        if( typeof atob === undefined || typeof Uint8Array === undefined || typeof Blob === undefined ){
+            callback( new Error('Browser will not support image resizing.'), false );
+        }
+
+        var binary = atob( dataURI.split(',')[1] );
+        var array = [];
+        for( var i = 0; i < binary.length; i++ ){
+            array.push( binary.charCodeAt(i) );
+        }
+
+        callback( false, new Blob([ new Uint8Array( array ) ], { type: dataType } ) );
+    }
+
+    return{
+        resizeFile: _resizeFile
+    };
+
+})( jQuery, window, document );
+
+
+
+
+
+/*
+
 
 ;(function ( $, window, document, undefined ){
-
 	var pluginName = 'curtziImageUploader';
 
 	var defaults = {
@@ -284,12 +536,6 @@
 		return data;
 	};
 
-	/**
-	 * IMAGE READING / SCALING
-	 * @param file
-	 * @param callback
-	 * @returns {*}
-	 */
 	CurtziUploader.prototype.readImageFile = function( file, callback ){
 		if( !file ) return;
 		var self = this;
@@ -324,12 +570,6 @@
 	};
 
 
-	/**
-	 * AMAZON AWS S3 UPLOADING
-	 * @param imageData
-	 * @param filename
-	 * @param callback
-	 */
 	CurtziUploader.prototype.uploadToS3 = function( imageData, filename, callback ){
 		var self = this;
 		self.getSignedPutUrl( filename, function( error, result ){
@@ -352,9 +592,7 @@
 		});
 	};
 
-	/**
-	 * A bit worried about this working in all browsers
-	 */
+
 	CurtziUploader.prototype.dataURItoBlob = function( dataURI ){
 		var binary = atob( dataURI.split(',')[1] );
 		var array = [];
@@ -408,11 +646,6 @@
 		});
 	};
 
-	/**
-	 * PUBLIX
-	 * @param options
-	 * @returns {*}
-	 */
 	$.fn[pluginName] = function( options ){
 		return this.each( function(){
 			if( !$.data( this, 'plugin_' + pluginName ) ){
@@ -421,4 +654,6 @@
 		});
 	}
 
+
 })( jQuery, window, document );
+ */

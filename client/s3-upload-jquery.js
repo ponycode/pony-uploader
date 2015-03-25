@@ -14,7 +14,7 @@
                 $progress.attr( 'aria-valuenow', percent).css({width: percent + "%" });
             }
 
-            function _changeUIState( state ){
+            function _changeUIState( state, error ){
                 _state = state;
                 $dropZone.removeClass(allStateClasses)
 
@@ -26,6 +26,7 @@
                 }else if( _state === 'uploading' ){
                     $dropZone.addClass('dropZoneUploading');
                 }else if( _state === 'error' ){
+                    if( error ) $('.errorMessage').text( error.message || error );
                     $dropZone.addClass('dropZoneError');
                 }else if( _state === 'complete' ){
                     $dropZone.addClass('dropZoneComplete');
@@ -60,26 +61,51 @@
 
                 _changeUIState( 'uploading' );
                 var files = e.originalEvent.dataTransfer.files;
-                console.log( "Dropped: ", files );
+                var file = files[0]; //TODO: support multiple
 
+                s3FileResize.resizeFile( file, 1024, 1024, function( error, resizeResult ){
 
-                function _complete(){
-                    _changeUIState( 'complete' );
-                    setTimeout( function(){
-                        _changeUIState( 'initial' );
-                    }, 3000 );
-                }
+                    var uploadData = {
+                        filename: file.name,
+                        filetype: file.type,
+                        filesize: resizeResult.blob.size,
+                        originalFilesize: file.size,
+                        width: resizeResult.width,
+                        height: resizeResult.height,
+                        blob: resizeResult.blob
+                    };
 
-                var count = 0;
-                var interval = setInterval( function(){
-                    count++;
-                    if( count > 10 ){
-                        clearInterval( interval );
-                        _complete();
-                    }else{
-                        _updateProgress( count * 10 );
-                    }
-                }, 500 );
+                    s3FileUpload.getSignedUpload( signatureUrl, uploadData, function( error, signatureResult ){
+
+                        if( error ){
+                            _changeUIState( 'error', error );
+                            return;
+                        }
+
+                        console.log( "GOT AN S3 SIGNATURE: ", signatureResult );
+                        s3FileUpload.uploadToS3( signatureResult.uploadUrl, uploadData, _updateProgress, function( error, uploadResult ){
+                            if( error ){
+                                _changeUIState( 'error', error );
+                                return;
+                            }
+
+                            console.log( "DONE WITH UPLOAD: ", uploadResult );
+                            s3FileUpload.completeUpload( signatureResult.completeUrl, function( error, completeResult ){
+                                if( error ){
+                                    _changeUIState( 'error', error );
+                                    return;
+                                }
+
+                                console.log( "UPLOAD COMPLETED", completeResult );
+
+                                _changeUIState( 'complete', error );
+                                setTimeout( function(){
+                                    _changeUIState( 'initial', error );
+                                }, 3000 );
+                            });
+                        });
+                    });
+                });
             });
         });
     };

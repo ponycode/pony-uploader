@@ -16,6 +16,6 @@
     </div>
     <div class="error text-center">
         <h3>Oops!</h3>
-        <p>Error uploading file</p>
+        <p class="errorMessage">Error uploading file</p>
     </div>
 </div>

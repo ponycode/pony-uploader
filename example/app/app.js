@@ -77,9 +77,10 @@ app.use( lusca({
     csp: {
         policy: {
             'default-src': '\'self\' *.googleapis.com',
-            'img-src': '\'self\'',
+            'img-src': '\'self\' data:',
             'script-src': '\'self\' \'unsafe-inline\' *.googleapis.com',
-            'style-src': '\'self\' \'unsafe-inline\''
+            'style-src': '\'self\' \'unsafe-inline\'',
+            'connect-src': '\'self\' *.s3.amazonaws.com'
         }
     },
     xframe: 'SAMEORIGIN',
