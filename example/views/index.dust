@@ -4,7 +4,7 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <h1>Hello <small>{?user}{user.email}{:else}World{/user}</small></h1>
+        <h1>Upload Something</h1>
     </div>
 </div>
 

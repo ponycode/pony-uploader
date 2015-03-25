@@ -1,2 +1,2 @@
 
-module.exports.Signatures = require('./lib/signatures');
+module.exports = require('./lib/server');

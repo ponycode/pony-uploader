@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/ponycode/s3-file-upload",
   "dependencies": {
-    "aws-sdk": "~2.1.19"
+    "aws-sdk": "~2.1.19",
+    "lodash": "~3.5.0"
   }
 }

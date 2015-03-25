@@ -1,0 +1,38 @@
+<div class="curtziUploader {extraClasses}" data-prefix="{prefix}" data-id="{?id}{id}{:else}{application.id}{/id}" data-crop-width="{cropWidth}" data-crop-height="{cropHeight}" style="width: {cropWidth}px; height: {cropHeight}px; ">
+    <input type="file" class="fileInput"/>
+    <input type="hidden" class="imageUrl" name="{fieldName}" value="{currentValue}" />
+
+    {^currentValue}
+    <div class="backgroundLayer">
+        <span class="glyphicon glyphicon-picture pictureIcon"></span><br/>
+        {message}
+        {?sizeMessage}
+        <br/><small>{sizeMessage}</small>
+        {/sizeMessage}
+    </div>
+    {/currentValue}
+
+    <div class="photoLayer dropTarget">
+        <img src="{currentValue}">
+    </div>
+
+    <div class="cropLayer"></div>
+
+    <div class="controlsContainer">
+        <div class="uploadMessage">
+			<span class="glyphicon glyphicon-camera
+			"></span>
+        </div>
+        <div class="cropControls">
+            <div class="zoomControls">
+                <a href="#" class="cropPlus"><span class="glyphicon glyphicon-zoom-in"></span></a>
+                <a href="#" class="cropMinus"><span class="glyphicon glyphicon-zoom-out"></span></a>
+            </div>
+            <a href="#" class="cropCancel">cancel</a>
+            <a href="#" class="cropSave">save</a>
+        </div>
+        <div class="uploadStatus">
+            Uploading...
+        </div>
+    </div>
+</div>
