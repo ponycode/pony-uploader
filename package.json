@@ -1,0 +1,33 @@
+{
+  "name": "s3-file-upload",
+  "version": "0.0.0",
+  "description": "Direct to S3 file uploads from the client.",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ponycode/s3-file-upload.git"
+  },
+  "author": {
+    "name": "Joshua Kennedy",
+    "email": "josh@ponycode.com"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/ponycode/s3-file-upload/blob/master/LICENSE"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/ponycode/s3-file-upload/issues"
+  },
+  "homepage": "https://github.com/ponycode/s3-file-upload",
+  "dependencies": {
+    "aws-sdk": "~2.1.19"
+  }
+}

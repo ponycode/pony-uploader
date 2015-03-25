@@ -1,0 +1,68 @@
+{>main-layout activeNavLink="register" data-controller="authenticate" data-action="register" /}
+
+{<body}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1 class="page-header">Register</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-md-6">
+        <p>Please enter an email address and a secure password below.</p>
+        <p>Be sure to use a combination of <strong>uppercase letters</strong>, <strong>lowercase letters</strong>, <strong>numbers</strong>, and <strong>special characters</strong> for example: <code>Bl!nk23$</code>.</p>
+        <br/>
+    </div>
+</div>
+
+<form method="POST">
+    <input type="hidden" name="_csrf" value="{_csrf}" />
+
+    <div class="row">
+        {>flash/}
+
+        <div class="col-xs-12 col-sm-6">
+            <label for="email">Email address</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <input type="email" class="form-control input-lg" id="email" placeholder="Enter email" name="email">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <br/>
+            <label for="password">Password</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <input type="password" class="form-control input-lg" id="password" placeholder="Password" name="password">
+        </div>
+        <div class="col-xs-12 col-sm-3">
+            <div class="progress" id="passwordStrengthProgress">
+                <div id="passwordStrength" class="progress-bar progress-bar-danger" role="progressbar" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <br/>
+
+            <button id="registerButton" type="submit" class="btn btn-primary btn-lg">Register</button>
+
+            <br/><br/>
+
+            <div id="passwordMessage" class="alert alert-danger" style="display: none;" role="alert"></div>
+        </div>
+    </div>
+
+</form>
+
+{/body}

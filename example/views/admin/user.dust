@@ -1,0 +1,62 @@
+{>"admin/admin-layout" activeNavLink="users" /}
+
+{<body}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>{userToEdit.email}</h1>
+    </div>
+</div>
+
+<form method="POST">
+    <input type="hidden" name="_csrf" value="{_csrf}" />
+
+    <div class="row">
+        <div class="col-xs-12">
+            <br/>
+            <table class="table">
+                <tr>
+                    <th>Email</th>
+                    <td>{userToEdit.email}</td>
+                </tr>
+                <tr>
+                    <th>Verified</th>
+                    <td>{@eq key=isEmailVerified value="true" type="boolean"}<span class="label label-success">Verified</span>{:else}<span class="label label-danger">Not Verified</span>{/eq}</td>
+                </tr>
+                <tr>
+                    <th>Roles</th>
+                    <td>
+                        {#usersRoles}
+                        <div class="checkbox">
+                            <label><input type="checkbox" value="{role}" name="roles[]" {@eq key=hasRole value="true" type="boolean"} checked="true"{/eq}>{bootstrapLabel|s}</label>
+                        </div>
+                        {/usersRoles}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a href="/admin/users" class="btn btn-default btn-lg">Back to all Users</a>&nbsp;&nbsp;<input type="submit" class="btn btn-primary btn-lg" value="Update User" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-xs-6">
+            <br/><br/><br/>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">User Actions</h3>
+                </div>
+                <div class="panel-body">
+                    <p>Deleting this user will be permanent and unrecoverable.</p>
+                    <a href="/admin/users/{userToEdit.id}/delete/confirm" class="btn btn-danger">Delete User</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+{/body}

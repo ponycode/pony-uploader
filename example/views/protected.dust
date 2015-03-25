@@ -1,0 +1,17 @@
+{>main-layout activeNavLink="protected" /}
+
+{<body}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>Hello <small>{user.email}</small></h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        Welcome to the protected part of the site
+    </div>
+</div>
+
+{/body}

@@ -1,0 +1,20 @@
+{
+	"env": {
+		"browser": false,
+		"node": true
+	},
+	"globals": {
+		// true=modifiable; false=var should never be written to
+	},
+	"rules": {
+		// 0=off; 1=Warning; 2=Error
+		"eol-last": 0,
+		"no-use-before-define": 0,
+		"quotes": 0,
+		"no-unused-vars": [ 2, { "vars": "all", "args": "none" } ],
+		"no-underscore-dangle": 0,
+		"curly": 0,
+        "no-trailing-spaces": 0,
+        "no-shadow": 0
+    }
+}

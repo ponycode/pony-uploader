@@ -1,0 +1,11 @@
+{>"admin/admin-layout" activeNavLink="home" /}
+
+{<body}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>Hello <small>{?user}{user.email}{:else}World{/user}</small></h1>
+    </div>
+</div>
+
+{/body}
