@@ -23,7 +23,11 @@
 			enabled: false,
             fromEmail: "accounts@s3-file-upload.com",
 			templatesPath: path.join( __dirname, '/../views/emails' )
-		}
+		},
+        s3:{
+            accessKey: process.env.AWS_ACCESS_KEY,
+            secretKey: process.env.AWS_SECRET_KEY
+        }
 	};
 
 })();

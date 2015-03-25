@@ -28,7 +28,6 @@ require('../lib/dust-helpers.js')( dust );
 var dbBootstrap = require('../lib/db-bootstrap');
 var authentication = require('../lib/authentication');
 var usersBootstrap = require('../lib/users-bootstrap');
-var s3FileUpload = require('../../index')({ awsKey: "shit", awsSecret: "moreshit" });
 
 // LOAD CONFIGURATION
 config
@@ -62,6 +61,8 @@ app.set('view engine', 'dust');
 
 app.disable( 'x-powered-by' );
 app.use( express.static(path.join(__dirname, '../public')) );
+app.use( express.static(path.join(__dirname, '../../client')) );
+
 app.use( favicon( path.join(__dirname, '../public/images/favicon.ico')) );
 app.use( logger('dev') );
 app.use( bodyParser.json() );
@@ -95,9 +96,6 @@ app.use( middleware.helpers );
 // LOAD THANGS FROM THE /routes DIRECTORY
 var loadedRoutes = requireMany( '../routes' );
 loadedRoutes.apply( app );
-
-
-s3FileUpload.setupExpressRoutes( app );
 
 app.use( middleware.fourOhFour );       // Needs to be after all routes are loaded
 app.use( middleware.unhandledError );   // Needs to be the last middleware on the stack

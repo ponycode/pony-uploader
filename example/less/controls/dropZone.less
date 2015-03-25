@@ -1,0 +1,68 @@
+.dropZone{
+  background-color: #139DFE;
+  min-height: 200px;
+  color: white;
+
+  .message{
+    opacity: 0;
+    .transition( opacity .25s );
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+  }
+
+  .defaultMessage{
+    .message();
+  }
+
+  .dropMessage{
+    .message();
+  }
+
+  .uploading{
+    .message();
+  }
+
+  .error{
+    .message();
+  }
+
+  .complete{
+    .message();
+  }
+
+}
+
+.dropZoneDefault{
+  .defaultMessage{
+    opacity: 1;
+  }
+}
+
+.dropZoneDrop{
+  .dropMessage{
+    opacity: 1;
+  }
+}
+
+.dropZoneUploading{
+  .uploading{
+    opacity: 1;
+  }
+}
+
+.dropZoneError{
+  .error{
+    opacity: 1;
+  }
+}
+
+.dropZoneComplete{
+  .complete{
+    opacity: 1;
+  }
+}
