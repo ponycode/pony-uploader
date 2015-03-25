@@ -3,7 +3,7 @@
 
     var allStateClasses = 'dropZoneDefault dropZoneDrop dropZoneUploading dropZoneError dropZoneComplete';
 
-    $.fn.dropZone = function(){
+    $.fn.ponyUpload = function(){
         $(this).each( function(){
             var $dropZone = $(this);
             var signatureUrl = $dropZone.attr('data-signUrl');
@@ -63,7 +63,7 @@
                 var files = e.originalEvent.dataTransfer.files;
                 var file = files[0]; //TODO: support multiple
 
-                s3FileResize.resizeFile( file, 1024, 1024, function( error, resizeResult ){
+                ponyImageResize.resizeFile( file, 1024, 1024, function( error, resizeResult ){
 
                     var uploadData = {
                         filename: file.name,
@@ -75,7 +75,7 @@
                         blob: resizeResult.blob
                     };
 
-                    s3FileUpload.getSignedUpload( signatureUrl, uploadData, function( error, signatureResult ){
+                    ponyUploader.getSignedUpload( signatureUrl, uploadData, function( error, signatureResult ){
 
                         if( error ){
                             _changeUIState( 'error', error );
@@ -83,14 +83,14 @@
                         }
 
                         console.log( "GOT AN S3 SIGNATURE: ", signatureResult );
-                        s3FileUpload.uploadToS3( signatureResult.uploadUrl, uploadData, _updateProgress, function( error, uploadResult ){
+                        ponyUploader.uploadToS3( signatureResult.uploadUrl, uploadData, _updateProgress, function( error, uploadResult ){
                             if( error ){
                                 _changeUIState( 'error', error );
                                 return;
                             }
 
                             console.log( "DONE WITH UPLOAD: ", uploadResult );
-                            s3FileUpload.completeUpload( signatureResult.completeUrl, function( error, completeResult ){
+                            ponyUploader.completeUpload( signatureResult.completeUrl, function( error, completeResult ){
                                 if( error ){
                                     _changeUIState( 'error', error );
                                     return;

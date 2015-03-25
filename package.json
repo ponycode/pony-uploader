@@ -1,10 +1,10 @@
 {
-  "name": "s3-file-upload",
-  "version": "0.0.0",
+  "name": "pony-uploader",
+  "version": "0.0.1",
   "description": "Direct to S3 file uploads from the client.",
   "main": "index.js",
   "directories": {
-    "example": "example"
+    "dist": "dist"
   },
   "scripts": {
     "test": "test"
@@ -30,5 +30,12 @@
   "dependencies": {
     "aws-sdk": "~2.1.19",
     "lodash": "~3.5.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "load-grunt-tasks": "~3.0.0",
+    "grunt-contrib-less": "~1.0.0",
+    "grunt-contrib-uglify": "~0.7.0",
+    "grunt-contrib-cssmin": "~0.11.0"
   }
 }
