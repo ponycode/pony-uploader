@@ -200,7 +200,7 @@
         ponyEXIF.getExifFromJPEGArrayBuffer( buffer, function( error, exif ){
             if( !exif ) exif = worstCaseResponse;
             if( error ) console.error( "Error getting exif data: ", error );
-            callback( false, worstCaseResponse );
+            callback( false, exif );
         });
     }
 
