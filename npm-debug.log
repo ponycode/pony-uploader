@@ -1,107 +1,101 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'node', '/usr/local/bin/npm', 'login' ]
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'publish' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.38
-4 warn Username may not contain non-url-safe chars
-5 verbose adduser before first PUT { name: 'jkennedy1980',
-5 verbose adduser   password: 'XXXXX',
-5 verbose adduser   email: 'all@curtzi.com',
-5 verbose adduser   _id: 'org.couchdb.user:jkennedy1980',
-5 verbose adduser   type: 'user',
-5 verbose adduser   roles: [],
-5 verbose adduser   date: '2015-03-25T23:10:39.273Z' }
-6 verbose request where is /-/user/org.couchdb.user:jkennedy1980
-7 verbose request registry https://registry.npmjs.org/
-8 verbose request id 7425c9d5641817eb
-9 verbose url raw /-/user/org.couchdb.user:jkennedy1980
-10 verbose url resolving [ 'https://registry.npmjs.org/',
-10 verbose url resolving   './-/user/org.couchdb.user:jkennedy1980' ]
-11 verbose url resolved https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980
-12 verbose request where is https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980
-13 info trying registry request attempt 1 at 16:10:39
-14 http PUT https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980
-15 http 409 https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980
-16 verbose headers { date: 'Wed, 25 Mar 2015 23:10:39 GMT',
-16 verbose headers   server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-16 verbose headers   'content-type': 'application/json',
-16 verbose headers   'cache-control': 'max-age=60',
-16 verbose headers   'content-length': '58',
-16 verbose headers   'accept-ranges': 'bytes',
-16 verbose headers   via: '1.1 varnish',
-16 verbose headers   'x-served-by': 'cache-ord1727-ORD',
-16 verbose headers   'x-cache': 'MISS',
-16 verbose headers   'x-cache-hits': '0',
-16 verbose headers   'x-timer': 'S1427325039.423198,VS0,VE58',
-16 verbose headers   'keep-alive': 'timeout=10, max=50',
-16 verbose headers   connection: 'Keep-Alive' }
-17 verbose adduser update existing user
-18 verbose request where is /-/user/org.couchdb.user:jkennedy1980?write=true
-19 verbose request registry https://registry.npmjs.org/
-20 verbose url raw /-/user/org.couchdb.user:jkennedy1980?write=true
-21 verbose url resolving [ 'https://registry.npmjs.org/',
-21 verbose url resolving   './-/user/org.couchdb.user:jkennedy1980?write=true' ]
-22 verbose url resolved https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980?write=true
-23 verbose request where is https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980?write=true
-24 info trying registry request attempt 1 at 16:10:39
-25 http GET https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980?write=true
-26 http 200 https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980?write=true
-27 verbose adduser userobj { name: 'jkennedy1980',
-27 verbose adduser   password: 'XXXXX',
-27 verbose adduser   email: 'all@curtzi.com',
-27 verbose adduser   _id: 'org.couchdb.user:jkennedy1980',
-27 verbose adduser   type: 'user',
-27 verbose adduser   roles: [],
-27 verbose adduser   date: '2015-03-25T23:10:39.273Z' }
-28 verbose request where is /-/user/org.couchdb.user:jkennedy1980/-rev/8-43d2f530ae975258bd0d5da887980634
-29 verbose request registry https://registry.npmjs.org/
-30 verbose url raw /-/user/org.couchdb.user:jkennedy1980/-rev/8-43d2f530ae975258bd0d5da887980634
-31 verbose url resolving [ 'https://registry.npmjs.org/',
-31 verbose url resolving   './-/user/org.couchdb.user:jkennedy1980/-rev/8-43d2f530ae975258bd0d5da887980634' ]
-32 verbose url resolved https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980/-rev/8-43d2f530ae975258bd0d5da887980634
-33 verbose request where is https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980/-rev/8-43d2f530ae975258bd0d5da887980634
-34 info trying registry request attempt 1 at 16:10:39
-35 http PUT https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980/-rev/8-43d2f530ae975258bd0d5da887980634
-36 http 403 https://registry.npmjs.org/-/user/org.couchdb.user:jkennedy1980/-rev/8-43d2f530ae975258bd0d5da887980634
-37 verbose headers { date: 'Wed, 25 Mar 2015 23:10:40 GMT',
-37 verbose headers   server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-37 verbose headers   'content-type': 'application/json',
-37 verbose headers   'cache-control': 'max-age=60',
-37 verbose headers   'content-length': '124',
-37 verbose headers   'accept-ranges': 'bytes',
-37 verbose headers   via: '1.1 varnish',
-37 verbose headers   'x-served-by': 'cache-ord1723-ORD',
-37 verbose headers   'x-cache': 'MISS',
-37 verbose headers   'x-cache-hits': '0',
-37 verbose headers   'x-timer': 'S1427325040.082269,VS0,VE62',
-37 verbose headers   'keep-alive': 'timeout=10, max=50',
-37 verbose headers   connection: 'Keep-Alive' }
-38 verbose adduser back [ [Error: forbidden You may not change your email address
-38 verbose adduser   Please visit https://npmjs.org/email-edit to do so.: -/user/org.couchdb.user:jkennedy1980/-rev/8-43d2f530ae975258bd0d5da887980634],
-38 verbose adduser   { error: 'forbidden',
-38 verbose adduser     reason: 'You may not change your email address\nPlease visit https://npmjs.org/email-edit to do so.' },
-38 verbose adduser   '{"error":"forbidden","reason":"You may not change your email address\\nPlease visit https://npmjs.org/email-edit to do so."}' ]
-39 warn adduser Incorrect username or password
-39 warn adduser You can reset your account by visiting:
-39 warn adduser
-39 warn adduser     https://npmjs.org/forgot
-40 error Error: forbidden You may not change your email address
-40 error Please visit https://npmjs.org/email-edit to do so.: -/user/org.couchdb.user:jkennedy1980/-rev/8-43d2f530ae975258bd0d5da887980634
-40 error     at RegClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:308:14)
-40 error     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:246:65)
-40 error     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:236:22)
-40 error     at Request.emit (events.js:98:17)
-40 error     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1142:14)
-40 error     at Request.emit (events.js:117:20)
-40 error     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1096:12)
-40 error     at IncomingMessage.emit (events.js:117:20)
-40 error     at _stream_readable.js:944:16
-40 error     at process._tickCallback (node.js:448:13)
-41 error If you need help, you may report this *entire* log,
-41 error including the npm and node versions, at:
-41 error     <http://github.com/npm/npm/issues>
-42 error System Darwin 14.1.0
-43 error command "node" "/usr/local/bin/npm" "login"
-44 error cwd /Users/jkenne202/WorkingCopies/s3-file-upload
-45 error node -v v0.10.38
-46 error npm -v 1.4.28
-47 verbose exit [ 1, true ]
+4 verbose publish [ '.' ]
+5 verbose cache add [ '.', null ]
+6 verbose cache add name=undefined spec="." args=[".",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: '.',
+7 verbose parsed url   path: '.',
+7 verbose parsed url   href: '.' }
+8 silly lockFile 3a52ce78- .
+9 verbose lock . /Users/jkenne202/.npm/3a52ce78-.lock
+10 verbose tar pack [ '/Users/jkenne202/.npm/pony-uploader/0.0.1/package.tgz', '.' ]
+11 verbose tarball /Users/jkenne202/.npm/pony-uploader/0.0.1/package.tgz
+12 verbose folder .
+13 info prepublish pony-uploader@0.0.1
+14 silly lockFile 1f1177db-tar tar://.
+15 verbose lock tar://. /Users/jkenne202/.npm/1f1177db-tar.lock
+16 silly lockFile 02e4e8dd--pony-uploader-0-0-1-package-tgz tar:///Users/jkenne202/.npm/pony-uploader/0.0.1/package.tgz
+17 verbose lock tar:///Users/jkenne202/.npm/pony-uploader/0.0.1/package.tgz /Users/jkenne202/.npm/02e4e8dd--pony-uploader-0-0-1-package-tgz.lock
+18 silly lockFile 1f1177db-tar tar://.
+19 silly lockFile 1f1177db-tar tar://.
+20 silly lockFile 02e4e8dd--pony-uploader-0-0-1-package-tgz tar:///Users/jkenne202/.npm/pony-uploader/0.0.1/package.tgz
+21 silly lockFile 02e4e8dd--pony-uploader-0-0-1-package-tgz tar:///Users/jkenne202/.npm/pony-uploader/0.0.1/package.tgz
+22 silly lockFile 565d2076--npm-pony-uploader-0-0-1-package /Users/jkenne202/.npm/pony-uploader/0.0.1/package
+23 verbose lock /Users/jkenne202/.npm/pony-uploader/0.0.1/package /Users/jkenne202/.npm/565d2076--npm-pony-uploader-0-0-1-package.lock
+24 silly lockFile 565d2076--npm-pony-uploader-0-0-1-package /Users/jkenne202/.npm/pony-uploader/0.0.1/package
+25 silly lockFile 565d2076--npm-pony-uploader-0-0-1-package /Users/jkenne202/.npm/pony-uploader/0.0.1/package
+26 silly lockFile 3a52ce78- .
+27 silly lockFile 3a52ce78- .
+28 silly publish { name: 'pony-uploader',
+28 silly publish   version: '0.0.1',
+28 silly publish   description: 'Direct to S3 file uploads from the client.',
+28 silly publish   main: 'index.js',
+28 silly publish   directories: { dist: 'dist' },
+28 silly publish   scripts: { test: 'test' },
+28 silly publish   repository:
+28 silly publish    { type: 'git',
+28 silly publish      url: 'https://github.com/ponycode/s3-file-upload.git' },
+28 silly publish   author: { name: 'Joshua Kennedy', email: 'josh@ponycode.com' },
+28 silly publish   licenses:
+28 silly publish    [ { type: 'MIT',
+28 silly publish        url: 'https://github.com/ponycode/s3-file-upload/blob/master/LICENSE' } ],
+28 silly publish   bugs: { url: 'https://github.com/ponycode/s3-file-upload/issues' },
+28 silly publish   homepage: 'https://github.com/ponycode/s3-file-upload',
+28 silly publish   dependencies: { 'aws-sdk': '~2.1.19', lodash: '~3.5.0' },
+28 silly publish   devDependencies:
+28 silly publish    { grunt: '~0.4.5',
+28 silly publish      'load-grunt-tasks': '~3.0.0',
+28 silly publish      'grunt-contrib-less': '~1.0.0',
+28 silly publish      'grunt-contrib-uglify': '~0.7.0',
+28 silly publish      'grunt-contrib-cssmin': '~0.11.0' },
+28 silly publish   readme: '# pony-uploader\n\nPony uploader is a simple drag & drop image uploader which will send image directly to Amazon S3. This project contains\na server component which will work well with express, a client side component, and a full example project. Pony-uploader uses several\nHTML5 features and will probably not work on older browsers.\n\n\n## Getting Started\nClone the repo [https://github.com/ponycode/s3-file-upload](https://github.com/ponycode/s3-file-upload) and run `npm install`.\nNext, go into the example folder and run `npm install`. To start the server run `node app/apps.js` and go to http://localhost:3000 in a browser.\n\n```bash\n$ git clone https://github.com/ponycode/s3-file-upload\n$ cd s3-file-upload\n$ npm install\n$ cd example\n$ npm install\n$ node app/app.js\n```\n\n# Picking the client apart\nThe client is made of 3 components: an image resizer, an uploader, and a jQuery plugin. If you don\'t wish to use the HTML & CSS provided\nby pony-debugger you can use the image resizer and uploader independently.\n\n### The uploader\n\n* getSignedUpload( signatureUrl, fileData, callback ) - This method will call your server to get a signed S3 upload url. The response will contain the upload url, the complete url, and what will be the images public S3 url.\n* uploadToS3( uploadUrl, uploadData, progressCallback, callback ) - This method sends the image\'s raw data to S3 using the signed S3 upload url.\n* completeUpload( completeUrl, callback ) - This method will call your server to let it know that the upload is complete. This is so that you can keep image references in the database and know which images were uploaded successfully.\n\n### The image resizer\n\n* resizeFile( file, maxWidth, maxHeight, callback ) - This method takes an HTML file object\n\n### The jQuery plugin\n\n* ponyUpload() - This method can be called on your .dropZone element. It will wire the drag & drop events, and expect to handle the state changes as files are uploaded. Your .dropZone element\nmust have a `data-signUrl` which tells the plugin what URL to call to get a signed upload url. This route will be mostly handled by pony-uploader.\n\n```html\n<div class="dropZone dropZoneDefault" data-signUrl="{signatureUrl}">\n    <div class="defaultMessage text-center">\n        <h3>Drag files here</h3>\n    </div>\n    <div class="dropMessage text-center">\n        <h3>Now drop it</h3>\n    </div>\n    <div class="uploading text-center">\n        <h3>Uploading</h3>\n        <div class="progress">\n            <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0;"></div>\n        </div>\n    </div>\n    <div class="complete text-center">\n        <h3>All Done!</h3>\n    </div>\n    <div class="error text-center">\n        <h3>Oops!</h3>\n        <p class="errorMessage">Error uploading file</p>\n    </div>\n</div>\n```\n\n# Integrating the server component\n\nYou can integrate the server component by requiring pony-uploader:\n\n```javascript\n\nvar ponyUploaderOptions = {\n    bucket: config.get("s3.bucket"),\n    s3AccessKeyId: config.get("s3.accessKey"),\n    s3AccessKeySecret: config.get("s3.secretKey")\n};\n\nvar ponyUploader = require(\'pony-uploader\')( ponyUploaderOptions );\n\napp.get( "/uploads/sign", function( req, res ){\n\n    var filename = req.query[\'filename\'];\n    var filetype = req.query[\'filetype\'];\n    var filesize = req.query[\'filesize\'];\n    var width = req.query[\'width\'] || 0;\n    var height = req.query[\'height\'] || 0;\n\n    filename = _sanitizeFilename( filename );\n\n    // This is your chance to load the image data into your database.\n    // You\'ll also need to create an S3 key for your image.\n    var image = new Image();\n    image.uploadedBy = req.user;\n    image.s3Key = (new Date().getTime()/1000) + "-" + filename;\n    image.width = width;\n    image.height = height;\n\n    var upload = {\n        key: image.s3Key,\n        filename: filename,\n        filetype: filetype,\n        filesize: filesize,\n        completeUrl: req.protocol + \'://\' + req.get(\'host\') + "/uploads/" + image.id + "/complete"\n    };\n\n    ponyUploader.getS3UploadSignature( upload, function( error, result ){\n        if( error ){\n            res.status( 500 ).send( "Error signing file for upload" );\n            return;\n        }\n\n        // This is a good place to save the image because the signature may be rejected it is the wrong filetype or too big\n        image.url = result.publicUrl;\n        image.save( function( error, image ) {\n            if (error) {\n                console.error("Error creating image: ", error);\n                res.status(500).send("Error creating image");\n                return;\n            }\n            res.send( result );\n        });\n    });\n\n});\n```\n\n## License\nCopyright (c) 2015 Joshua Kennedy\nLicensed under the MIT license.\n',
+28 silly publish   readmeFilename: 'README.md',
+28 silly publish   gitHead: '5f9dec8552ed99d9afea6afcd0bce35a7a7cf406',
+28 silly publish   _id: 'pony-uploader@0.0.1',
+28 silly publish   _shasum: '709e8b2c33582236bbef457a680707f034a532a8',
+28 silly publish   _from: '.' }
+29 verbose request where is /pony-uploader
+30 verbose request registry https://registry.npmjs.org/
+31 verbose request id 1e2a74f5c5795148
+32 verbose url raw /pony-uploader
+33 verbose url resolving [ 'https://registry.npmjs.org/', './pony-uploader' ]
+34 verbose url resolved https://registry.npmjs.org/pony-uploader
+35 verbose request where is https://registry.npmjs.org/pony-uploader
+36 info trying registry request attempt 1 at 20:25:55
+37 http PUT https://registry.npmjs.org/pony-uploader
+38 http 409 https://registry.npmjs.org/pony-uploader
+39 verbose request where is /pony-uploader?write=true
+40 verbose request registry https://registry.npmjs.org/
+41 verbose url raw /pony-uploader?write=true
+42 verbose url resolving [ 'https://registry.npmjs.org/', './pony-uploader?write=true' ]
+43 verbose url resolved https://registry.npmjs.org/pony-uploader?write=true
+44 verbose request where is https://registry.npmjs.org/pony-uploader?write=true
+45 info trying registry request attempt 1 at 20:25:57
+46 http GET https://registry.npmjs.org/pony-uploader?write=true
+47 http 200 https://registry.npmjs.org/pony-uploader?write=true
+48 error publish fail Cannot publish over existing version.
+48 error publish fail Update the 'version' field in package.json and try again.
+48 error publish fail
+48 error publish fail If the previous version was published in error, see:
+48 error publish fail     npm help unpublish
+48 error publish fail
+48 error publish fail To automatically increment version numbers, see:
+48 error publish fail     npm help version
+49 error System Darwin 14.1.0
+50 error command "node" "/usr/local/bin/npm" "publish"
+51 error cwd /Users/jkenne202/WorkingCopies/s3-file-upload
+52 error node -v v0.10.38
+53 error npm -v 1.4.28
+54 error code EPUBLISHCONFLICT
+55 verbose exit [ 1, true ]
