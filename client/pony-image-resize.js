@@ -8,7 +8,6 @@
 
         var fileLoader = new FileReader();
         var imageObj = new Image();
-        var outputDataType = "image/png";
 
         if( file.type.match('image.*') ){
             fileLoader.readAsDataURL( file );
@@ -39,7 +38,7 @@
             _scaleAndRotateImageToDataBlob( image, file.type, function( error, resizedData ){
                 if( error || !resizedData ) return callback( error || "No data url returned", false );
 
-                _dataUriToBlob( resizedData.dataUrl, outputDataType, function( error, blob ){
+                _dataUriToBlob( resizedData.dataUrl, "image/jpeg", function( error, blob ){
                     if( error ) return callback( error, false );
 
                     callback( false, {
@@ -48,7 +47,6 @@
                         height: resizedData.height,
                         originalWidth: image.width,
                         originalHeight: image.height,
-                        dataType: outputDataType,
                         originalDataType: file.type
                     });
                 });
@@ -65,24 +63,24 @@
 
         function _scaleAndRotateImageToDataBlob( image, fileType, callback ){
             _getExifData( image, fileType, function( error, exif ){
-                var scaledDimensions = _determineScaledDimensions( image );
+                var scaledDimensions = _determineScaledDimensions( image, exif );
 
                 var canvas = _buildOrientedCanvas( scaledDimensions.width, scaledDimensions.height, exif.Orientation );
                 var context = canvas.getContext('2d');
                 context.drawImage( imageObj, 0, 0, scaledDimensions.width, scaledDimensions.height );
 
-                var dataUrl = canvas.toDataURL( outputDataType );
+                var dataUrl = canvas.toDataURL( "image/jpeg", .8 );
                 document.body.removeChild( canvas );
 
                 callback( false, {
                     dataUrl: dataUrl,
-                    width: scaledDimensions.width,
-                    height: scaledDimensions.height
+                    width: canvas.width,
+                    height: canvas.height
                 });
             });
         }
 
-        function _determineScaledDimensions( image ){
+        function _determineScaledDimensions( image, exif ){
             var newWidth = image.width;
             var newHeight = image.height;
 
@@ -94,7 +92,7 @@
                     newWidth = image.width / heightRatio;
                     newHeight = maxHeight;
                 }else{
-                    newWidth = maxWidth
+                    newWidth = maxWidth;
                     newHeight = image.height / widthRatio;
                 }
             }
@@ -194,7 +192,7 @@
     function _getExifData( image, dataType, callback ){
         var worstCaseResponse = { Orientation: 1, DateTime: false, Make: false, Model: false };
 
-        if( dataType !== 'image/jpg' && dataType !== 'image/jpeg' ) return callback( false, worstCaseResponse);
+        if( dataType !== 'image/jpg' && dataType !== 'image/jpeg' ) return callback( false, worstCaseResponse );
 
         var buffer = _dataUriToArrayBuffer( image.src );
         ponyEXIF.getExifFromJPEGArrayBuffer( buffer, function( error, exif ){
