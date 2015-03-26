@@ -1,7 +1,7 @@
 {
-  "name": "s3-file-upload",
+  "name": "pony-uploader-example",
   "description": "Example project showing how to do direct to S3 file uploads from the client.",
-  "version": "0.1.2",
+  "version": "0.0.0",
   "homepage": "https://github.com/ponycode/s3-file-upload",
   "author": {
     "name": "Joshua Kennedy",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ponycode/s3-file-upload.git"
+    "url": "https://github.com/ponycode/pony-uploader.git"
   },
   "bugs": {
-    "url": "https://github.com/ponycode/s3-file-upload/issues"
+    "url": "https://github.com/ponycode/pony-uploader/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/ponycode/s3-file-upload/blob/master/LICENSE-MIT"
+      "url": "https://github.com/ponycode/pony-uploader/blob/master/LICENSE-MIT"
     }
   ],
   "main": "app/app.js",

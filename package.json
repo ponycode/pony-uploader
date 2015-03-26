@@ -1,6 +1,6 @@
 {
   "name": "pony-uploader",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Direct to S3 file uploads from the client.",
   "main": "index.js",
   "directories": {
