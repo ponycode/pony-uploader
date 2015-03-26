@@ -1,7 +1,7 @@
 {
   "name": "s3-file-upload",
   "description": "Example project showing how to do direct to S3 file uploads from the client.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/ponycode/s3-file-upload",
   "author": {
     "name": "Joshua Kennedy",
