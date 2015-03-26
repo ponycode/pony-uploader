@@ -39,6 +39,7 @@ module.exports = function( grunt ){
 			src: {
 				files: {
 					'dist/pony-upload.min.js': [
+                        'client/pony-exif.js',
                         'client/pony-image-resize.js',
                         'client/pony-uploader.js',
                         'client/pony-uploader-jquery.js'

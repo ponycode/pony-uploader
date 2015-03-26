@@ -64,6 +64,7 @@ must have a `data-signUrl` which tells the plugin what URL to call to get a sign
 # Integrating the server component
 
 You can integrate the server component by requiring pony-uploader:
+
 ```javascript
 
 var ponyUploaderOptions = {

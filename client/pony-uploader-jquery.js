@@ -3,7 +3,22 @@
 
     var allStateClasses = 'dropZoneDefault dropZoneDrop dropZoneUploading dropZoneError dropZoneComplete';
 
-    $.fn.ponyUpload = function(){
+    var defaults = {
+        allowedFileTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'],
+        imageUploadComplete: function( result ){
+            console.log( "ALL DONE", result );
+        }
+    };
+
+    $.fn.ponyUpload = function( options ) {
+
+        var settings = $.extend( defaults, options );
+
+        function _isAllowedFileType( file ){
+            var index = settings.allowedFileTypes.indexOf( file.type );
+            return index !== -1;
+        }
+
         $(this).each( function(){
             var $dropZone = $(this);
             var signatureUrl = $dropZone.attr('data-signUrl');
@@ -28,8 +43,14 @@
                 }else if( _state === 'error' ){
                     if( error ) $('.errorMessage').text( error.message || error );
                     $dropZone.addClass('dropZoneError');
+                    setTimeout( function(){
+                        _changeUIState( 'initial' );
+                    }, 3000 );
                 }else if( _state === 'complete' ){
                     $dropZone.addClass('dropZoneComplete');
+                    setTimeout( function(){
+                        _changeUIState( 'initial' );
+                    }, 3000 );
                 }
             }
 
@@ -62,6 +83,11 @@
                 _changeUIState( 'uploading' );
                 var files = e.originalEvent.dataTransfer.files;
                 var file = files[0]; //TODO: support multiple
+
+                if( !_isAllowedFileType( file ) ){
+                    _changeUIState( 'error', new Error("Invalid file type: " + file.type) );
+                    return;
+                }
 
                 ponyImageResize.resizeFile( file, 1024, 1024, function( error, resizeResult ){
 
@@ -97,11 +123,9 @@
                                 }
 
                                 console.log( "UPLOAD COMPLETED", completeResult );
+                                if( settings.imageUploadComplete ) settings.imageUploadComplete( completeResult );
 
                                 _changeUIState( 'complete', error );
-                                setTimeout( function(){
-                                    _changeUIState( 'initial', error );
-                                }, 3000 );
                             });
                         });
                     });

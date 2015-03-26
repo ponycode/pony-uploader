@@ -77,7 +77,7 @@ app.use( lusca({
     csp: {
         policy: {
             'default-src': '\'self\' *.googleapis.com',
-            'img-src': '\'self\' data:',
+            'img-src': '\'self\' data: *.s3.amazonaws.com',
             'script-src': '\'self\' \'unsafe-inline\' *.googleapis.com',
             'style-src': '\'self\' \'unsafe-inline\'',
             'connect-src': '\'self\' *.s3.amazonaws.com'
