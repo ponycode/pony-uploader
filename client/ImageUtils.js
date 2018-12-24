@@ -1,5 +1,12 @@
  class ImageUtils {
 
+	static browserCanLoadImages(){
+		if( typeof atob === undefined || typeof Uint8Array === undefined || typeof Blob === undefined || typeof ArrayBuffer === undefined ){
+			return false;
+		}
+		return true;
+	}
+
 	static fileIsJpeg( file ){
 		return file.type === 'image/jpg' || file.type === 'image/jpeg';
 	}
@@ -38,6 +45,12 @@
 		}
 
 		return new Blob([ new Uint8Array( array ) ], { type: dataType } );
+	}
+
+	static dataUrlToImage( dataUrl ){
+		const image = new Image();
+		image.src = dataUrl;
+		return image;
 	}
 
  }

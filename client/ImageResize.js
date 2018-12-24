@@ -1,0 +1,126 @@
+import LocalImageLoader from './LocalImageLoader';
+import ImageUtils from './ImageUtils';
+
+class ImageResize {
+
+	static async resizeLoadedImage( loadedImage, options ){
+		if( !ImageUtils.browserCanLoadImages() ) return null;
+
+		const image = this.scaleAndRotateImage( loadedImage, options );
+
+		return image;
+	}
+
+	static scaleAndRotateImage( loadedImage, options = {} ){
+		const orientation = ( loadedImage.exif ) ? loadedImage.exif.Orientation : 1;
+		const scaledDimensions = this.determineScaledDimensions( loadedImage, options );
+
+		const canvas = this.buildOrientedCanvas( scaledDimensions.width, scaledDimensions.height, orientation );
+		const context = canvas.getContext('2d');
+		context.drawImage( loadedImage.image, 0, 0, scaledDimensions.width, scaledDimensions.height );
+
+		const dataUrl = canvas.toDataURL( 'image/jpeg', options.jpgQuality || 0.8 );
+		document.body.removeChild( canvas );
+
+		const resizedImage = ImageUtils.dataUrlToImage( dataUrl );
+
+		return {
+			image: resizedImage,
+			width: resizedImage.width,
+			height: resizedImage.height,
+			file: loadedImage.file,
+			exit: loadedImage.exif
+		};
+	}
+
+	static determineScaledDimensions( image, options ){
+		let newWidth = image.width;
+		let newHeight = image.height;
+
+		let maxWidth = newWidth;
+		let maxHeight = newHeight;
+
+		if( options ){
+			maxWidth = options.width;
+			maxHeight = options.height;
+		}
+
+		if( image.width > maxWidth || image.height > maxHeight ){
+			const widthRatio = image.width / maxWidth;
+			const heightRatio = image.height / maxHeight;
+
+			if( widthRatio < heightRatio ){
+				newWidth = image.width / heightRatio;
+				newHeight = maxHeight;
+			}else{
+				newWidth = maxWidth;
+				newHeight = image.height / widthRatio;
+			}
+		}
+
+		return {
+			width: Math.floor( newWidth ),
+			height: Math.floor( newHeight )
+		};
+	}
+
+	static buildOrientedCanvas( width, height, orientation = 1 ){
+		if( orientation > 8 ) orientation = 1;
+
+		const canvas = document.createElement('canvas');
+		canvas.id = 'hiddenCanvas';
+		canvas.width = width;
+		canvas.height = height;
+		canvas.style.visibility = 'hidden';
+
+		if( orientation > 4 ){
+			canvas.width = height;
+			canvas.height = width;
+		}
+
+		const context = canvas.getContext('2d');
+		switch( orientation ){
+			case 2:
+				// horizontal flip
+				context.translate(width, 0);
+				context.scale(-1, 1);
+				break;
+			case 3:
+				// 180° rotate left
+				context.translate(width, height);
+				context.rotate(Math.PI);
+				break;
+			case 4:
+				// vertical flip
+				context.translate(0, height);
+				context.scale(1, -1);
+				break;
+			case 5:
+				// vertical flip + 90 rotate right
+				context.rotate(0.5 * Math.PI);
+				context.scale(1, -1);
+				break;
+			case 6:
+				// 90° rotate right
+				context.rotate(0.5 * Math.PI);
+				context.translate(0, -height);
+				break;
+			case 7:
+				// horizontal flip + 90 rotate right
+				context.rotate(0.5 * Math.PI);
+				context.translate(width, -height);
+				context.scale(-1, 1);
+				break;
+			case 8:
+				// 90° rotate left
+				context.rotate(-0.5 * Math.PI);
+				context.translate(-width, 0);
+				break;
+		}
+		document.body.appendChild( canvas );
+		return canvas;
+	}
+
+}
+
+export default ImageResize;

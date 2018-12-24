@@ -1,4 +1,3 @@
-
 import ImageExifReader from './ImageExifReader';
 import ImageUtils from './ImageUtils';
 
@@ -16,6 +15,8 @@ class LocalImageLoader {
 			size: this.file.size,
 			file: this.file
 		};
+
+		if( !ImageUtils.browserCanLoadImages() ) return result;
 
 		const imageData = await this._loadLocalFile( this.file );
 		if( !imageData ) return result;
@@ -35,7 +36,6 @@ class LocalImageLoader {
 	}
 
 	_loadLocalFile( file ){
-
 		if( !file.type.match('image.*') ){
 			throw new Error(`The input file is not a supported image: ${file.type}`);
 		}
