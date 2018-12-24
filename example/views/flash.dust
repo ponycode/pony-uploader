@@ -1,9 +1,0 @@
-{#flashErrors}
-    <div class="alert alert-danger" role="alert">{.}</div>
-{/flashErrors}
-{#flashInfos}
-    <div class="alert alert-info" role="alert">{.}</div>
-{/flashInfos}
-{#flashSuccesses}
-    <div class="alert alert-success" role="alert">{.}</div>
-{/flashSuccesses}

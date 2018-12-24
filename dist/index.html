@@ -1,0 +1,14 @@
+<html>
+<head></head>
+<body>
+	<input type="file" id="file" name="file" accept="image/png, image/jpeg"></input>
+	<script src='./client-test.js'></script>
+	<script>
+		var input = document.getElementById('file');
+		input.addEventListener( 'change', function(){
+			console.log('files changed', input.files );
+			test( input.files[0] );
+		});
+	</script>
+</body>
+</html>

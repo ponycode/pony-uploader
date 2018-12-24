@@ -7,7 +7,8 @@
     "dist": "dist"
   },
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "rollup": "rollup client-test.js --file dist/client-test.js --format iife --name test"
   },
   "repository": {
     "type": "git",
@@ -28,14 +29,9 @@
   },
   "homepage": "https://github.com/ponycode/s3-file-upload",
   "dependencies": {
-    "aws-sdk": "~2.1.19",
-    "lodash": "~3.5.0"
+    "aws-sdk": "^2.382.0"
   },
   "devDependencies": {
-    "grunt": "~0.4.5",
-    "load-grunt-tasks": "~3.0.0",
-    "grunt-contrib-less": "~1.0.0",
-    "grunt-contrib-uglify": "~0.7.0",
-    "grunt-contrib-cssmin": "~0.11.0"
+    "rollup": "^0.68.2"
   }
 }
