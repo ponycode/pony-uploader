@@ -24,6 +24,18 @@
 		return buffer;
 	}
 
+	static dataUriToBlob( dataURI, dataType ){
+		if( typeof dataURI !== 'string' ) throw new Error('Invalid argument: dataURI must be a string');
+
+		var binary = atob( dataURI.split(',')[1] );
+		var array = [];
+		for( var i = 0; i < binary.length; i++ ){
+			array.push( binary.charCodeAt(i) );
+		}
+
+		return new Blob([ new Uint8Array( array ) ], { type: dataType } );
+	}
+
  }
 
  export default ImageUtils;

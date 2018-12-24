@@ -1,11 +1,17 @@
 import LocalImageLoader from './local-file-loader';
+import { getHeapStatistics } from 'v8';
 
 class ImageResize {
 
-	static async resizeFile( file, maxWidth, maxHeight, callback ){
+	static browserCanResizeImages(){
 		if( typeof atob === undefined || typeof Uint8Array === undefined || typeof Blob === undefined || typeof ArrayBuffer === undefined ){
-			callback( new Error('Browser will not support image resizing.'), false );
+			return false;
 		}
+		return true;
+	}
+
+	static async resizeFile( file, maxWidth, maxHeight, callback ){
+		if( !this.browserCanResizeImages() ) return null;
 
 		const image = await new LocalImageLoader( file ).load();
 
