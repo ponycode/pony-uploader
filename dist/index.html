@@ -1,13 +1,34 @@
 <html>
-<head></head>
+<head>
+	<style>
+		img {
+			max-width: 200px;
+			height: auto;
+		}
+	</style>
+</head>
 <body>
 	<input type="file" id="file" name="file" accept="image/png, image/jpeg"></input>
+	<div id="image" />
 	<script src='./client-test.js'></script>
 	<script>
 		var input = document.getElementById('file');
-		input.addEventListener( 'change', function(){
+		var imageDiv = document.getElementById('image');
+
+		input.addEventListener( 'change', async function(){
 			console.log('files changed', input.files );
-			test( input.files[0] );
+			const result = await test( input.files[0] );
+
+			imageDiv.appendChild( result.image );
+
+			const p = document.createElement('p');
+			let exifItems = [];
+			for( let key in result.exif ){
+				exifItems.push( key + ' = ' + result.exif[key] + '<br/>' );
+			}
+			p.innerHTML = exifItems.join('');
+			imageDiv.appendChild( p );
+
 		});
 	</script>
 </body>

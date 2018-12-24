@@ -3,6 +3,10 @@ var test = (function () {
 
 	class ImageUtils {
 
+		static fileIsJpeg( file ){
+			return file.type === 'image/jpg' || file.type === 'image/jpeg';
+		}
+
 		static arrayBufferFromImage( image ){
 			return this.dataUriToArrayBuffer( image.src );
 		}
@@ -179,14 +183,15 @@ var test = (function () {
 			const image = await this._createImageFromLocalFile( imageData, this.file );
 			if( !image ) return result;
 
-			const exif = new ImageExifReader( image ).read();
+			result.image = image;
+			result.width = image.width;
+			result.height = image.height;
 
-			return {
-				width: image.width,
-				height: image.height,
-				image,
-				exif
-			};
+			if( ImageUtils.fileIsJpeg( this.file ) ){
+				result.exif = new ImageExifReader( image ).read();
+			}
+
+			return result;
 		}
 
 		_loadLocalFile( file ){
@@ -239,6 +244,7 @@ var test = (function () {
 	async function test( file ){
 		const image = await new LocalImageLoader( file ).load();
 		console.log( "image", image );
+		return image;
 	}
 
 	return test;

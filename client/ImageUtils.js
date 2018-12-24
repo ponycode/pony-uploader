@@ -1,5 +1,9 @@
  class ImageUtils {
 
+	static fileIsJpeg( file ){
+		return file.type === 'image/jpg' || file.type === 'image/jpeg';
+	}
+
 	static arrayBufferFromImage( image ){
 		return this.dataUriToArrayBuffer( image.src );
 	}

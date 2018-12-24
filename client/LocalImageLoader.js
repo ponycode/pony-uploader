@@ -1,5 +1,6 @@
 
 import ImageExifReader from './ImageExifReader';
+import ImageUtils from './ImageUtils';
 
 class LocalImageLoader {
 
@@ -22,14 +23,15 @@ class LocalImageLoader {
 		const image = await this._createImageFromLocalFile( imageData, this.file );
 		if( !image ) return result;
 
-		const exif = new ImageExifReader( image ).read();
+		result.image = image;
+		result.width = image.width;
+		result.height = image.height;
 
-		return {
-			width: image.width,
-			height: image.height,
-			image,
-			exif
-		};
+		if( ImageUtils.fileIsJpeg( this.file ) ){
+			result.exif = new ImageExifReader( image ).read();
+		}
+
+		return result;
 	}
 
 	_loadLocalFile( file ){
