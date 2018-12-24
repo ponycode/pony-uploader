@@ -1,4 +1,5 @@
 
+import ImageExifReader from './ImageExifReader';
 
 class LocalImageLoader {
 
@@ -11,7 +12,15 @@ class LocalImageLoader {
 	async load(){
 		const imageData = await this._loadLocalFile( this.file );
 		const image = await this._loadImageFromLocalFile( imageData, this.file );
-		return image;
+		const exif = new ImageExifReader( image ).read();
+
+		return {
+			name: this.file.name,
+			size: this.file.size,
+			file: this.file,
+			image,
+			exif	
+		};
 	}
 
 	_loadLocalFile( file ){
