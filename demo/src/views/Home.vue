@@ -1,18 +1,22 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="hello">
+    <h1>Demo</h1>
+    <vue-image-upload signature-url="http://www.google.com"></vue-image-upload>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import VueImageUpload from '../../../client/vue-image-upload'
 
 export default {
-  name: 'home',
-  components: {
-    HelloWorld
-  }
+	name: 'home',
+	components: {
+		VueImageUpload
+	}
 }
+
 </script>
+
+<style scoped lang="scss">
+
+</style>

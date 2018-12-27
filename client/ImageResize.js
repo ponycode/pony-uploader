@@ -15,9 +15,20 @@ class ImageResize {
 		const orientation = ( loadedImage.exif ) ? loadedImage.exif.Orientation : 1;
 		const scaledDimensions = this.determineScaledDimensions( loadedImage, options );
 
-		const canvas = this.buildOrientedCanvas( scaledDimensions.width, scaledDimensions.height, orientation );
+		const canvasWidth = options.width || scaledDimensions.width;
+		const canvasHeight = options.height || scaledDimensions.height;
+		const canvasBackgroundFillStyle = options.backgroundFillStyle || '#FFF';
+
+		const canvas = this.buildOrientedCanvas( canvasWidth, canvasHeight, orientation );
 		const context = canvas.getContext('2d');
-		context.drawImage( loadedImage.image, 0, 0, scaledDimensions.width, scaledDimensions.height );
+
+		const destinationX = Math.floor( (canvasWidth - scaledDimensions.width ) / 2.0 );
+		const destinationY = Math.floor( (canvasHeight - scaledDimensions.height ) / 2.0 );
+
+		context.fillStyle = canvasBackgroundFillStyle;
+		context.fillRect( 0, 0, canvasWidth, canvasHeight );
+
+		context.drawImage( loadedImage.image, 0, 0, loadedImage.image.width, loadedImage.image.height, destinationX, destinationY, scaledDimensions.width, scaledDimensions.height );
 
 		const dataUrl = canvas.toDataURL( 'image/jpeg', options.jpgQuality || 0.8 );
 		document.body.removeChild( canvas );
@@ -29,7 +40,7 @@ class ImageResize {
 			width: resizedImage.width,
 			height: resizedImage.height,
 			file: loadedImage.file,
-			exit: loadedImage.exif
+			exif: loadedImage.exif
 		};
 	}
 

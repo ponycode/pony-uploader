@@ -283,7 +283,7 @@ var test = (function () {
 				width: resizedImage.width,
 				height: resizedImage.height,
 				file: loadedImage.file,
-				exit: loadedImage.exif
+				Exif: loadedImage.exif
 			};
 		}
 

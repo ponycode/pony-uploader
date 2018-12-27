@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "test",
-    "rollup": "rollup client-test.js --file dist/client-test.js --format iife --name test"
+	"rollup": "rollup client-test.js --file dist/client-test.js --format iife --name test",
+	"build": "vue-cli-service build --target lib --name myLib"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,8 @@
   },
   "homepage": "https://github.com/ponycode/s3-file-upload",
   "dependencies": {
-    "aws-sdk": "^2.382.0"
+    "aws-sdk": "^2.382.0",
+    "vue": "^2.5.21"
   },
   "devDependencies": {
     "rollup": "^0.68.2"
