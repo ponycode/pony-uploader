@@ -132,8 +132,10 @@ export default {
 
 	& /deep/ img {
 		position: absolute;
-		top: 0;
-		left: 0;
+		top: 50%;
+		left: 50%;
+		width: 100%;
+		transform: translateX(-50%) translateY(-50%);
 	}
 }
 
