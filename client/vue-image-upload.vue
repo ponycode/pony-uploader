@@ -17,6 +17,7 @@
 <script>
 import LocalImageLoader from './LocalImageLoader.js'
 import ImageResize from './ImageResize.js'
+import Uploader from './uploader.js'
 
 export default {
 	name: 'vue-image-upload',
@@ -105,6 +106,9 @@ export default {
 		},
 		isAllowedFileType( file ){
 			return ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'].indexOf( file.type ) !== -1
+		},
+		upload(){
+
 		}
 	}
 }
