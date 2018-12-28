@@ -1,0 +1,17 @@
+{
+	"name": "Vue-Image-Upload Example Server",
+	"description": "A simple express server showing how to allow direct AWS S3 uploads from the client.",
+	"repository": "https://github.com/heroku/node-js-sample",
+	"keywords": ["vue-image-upload", "node", "s3", "aws"],
+	"success_url": "",
+	"env": {
+		"AWS_ID": {
+				"description": "AWS Secret obtained from your own AWS account",
+				"value": "[AWS_ID MUST BE SET IN HEROKU APP ENV VARS]"
+		},
+		"AWS_SECRET": {
+				"description": "[AWS_SECRET MUST BE SET IN HEROKU APP ENV VARS]",
+				"value": ""
+		}
+	}
+}
