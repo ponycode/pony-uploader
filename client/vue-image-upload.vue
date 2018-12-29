@@ -17,7 +17,8 @@
 <script>
 import LocalImageLoader from './LocalImageLoader.js'
 import ImageResize from './ImageResize.js'
-import Uploader from './uploader.js'
+import Uploader from './Uploader.js'
+import ImageUtils from './ImageUtils.js';
 
 export default {
 	name: 'vue-image-upload',
@@ -107,8 +108,25 @@ export default {
 		isAllowedFileType( file ){
 			return ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'].indexOf( file.type ) !== -1
 		},
-		upload(){
+		async upload(){
+			const metadata = this.image.exif || {};
+			metadata.filename = this.image.file.name
 
+			const fileInfo = {
+				filename: this.image.file.name,
+				filesize: this.image.file.size,
+				filetype: this.image.file.type,
+				metadata: metadata
+			}
+
+			try{
+				const blob = ImageUtils.imageToBlob( this.image.image, this.image.file.type )
+				const uploader = new Uploader( this.signatureUrl )	
+				const result = await uploader.upload( fileInfo, blob, percent => this.uploadPercent = percent )
+				
+			}catch( e ){
+				// TODO: handle error
+			}
 		}
 	}
 }

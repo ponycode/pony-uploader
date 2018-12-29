@@ -4,7 +4,8 @@ const app = express()
 const bodyParser = require('body-parser')
 const PORT = process.env.PORT || 3000
 
-const s3Upload = require('./s3Upload')({
+const S3Signer = require('./S3Signer');
+const s3Signer = new S3Signer({
 	s3AccessKeyId: process.env.S3_ACCESS_KEY_ID,
 	s3AccessKeySecret: process.env.S3_ACCESS_KEY_SECRET,
 	bucket: process.env.S3_BUCKET
@@ -12,10 +13,9 @@ const s3Upload = require('./s3Upload')({
 
 app.use( bodyParser.json() )
 
-app.get( '/api/images/uploads/signature', ( req, res ) => {
-	const upload = s3Upload.getSignedUpload({
-		key: req.body.key,
-		filename: req.body.filename,
+app.put( '/api/images/uploads/signature', async ( req, res ) => {
+	const upload = await s3Signer.signUpload({
+		key: 'test/' +  req.body.filename,
 		filesize: req.body.filesize,
 		filetype: req.body.filetype
 	})
@@ -25,4 +25,4 @@ app.get( '/api/images/uploads/signature', ( req, res ) => {
 	res.send( upload )
 })
 
-app.listen( PORT, () => console.log(`pony-upload server listening on port ${PORT}`))
+app.listen( PORT, () => console.log(`pony-upload server listening on port ${PORT}!`))
