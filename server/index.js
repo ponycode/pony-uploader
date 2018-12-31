@@ -14,15 +14,21 @@ const s3Signer = new S3Signer({
 app.use( bodyParser.json() )
 
 app.put( '/api/images/uploads/signature', async ( req, res ) => {
-	const upload = await s3Signer.signUpload({
-		key: 'test/' +  req.body.filename,
-		filesize: req.body.filesize,
-		filetype: req.body.filetype
-	})
-
-	// TODO: Store metadata to DB
-
-	res.send( upload )
+	try{
+		const upload = await s3Signer.signUpload({
+			bucket: process.env.S3_BUCKET,
+			key: 'test/' +  req.body.filename,
+			filesize: req.body.filesize,
+			filetype: req.body.filetype,
+			metadata: req.body.metadata
+		})
+	
+		// TODO: Store metadata to DB
+	
+		res.send( upload )
+	}catch( e ){
+		res.status(500).send({ error: e })
+	}
 })
 
 app.listen( PORT, () => console.log(`pony-upload server listening on port ${PORT}!`))

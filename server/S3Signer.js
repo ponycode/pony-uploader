@@ -30,7 +30,8 @@ class S3Signer {
 			Key: uploadInfo.key,
 			Expires: 60, // 60 seconds
 			ACL: 'public-read',
-			ContentType: uploadInfo.filetype
+			ContentType: uploadInfo.filetype,
+			Metadata: uploadInfo.metadata
 		})
 	}
 
