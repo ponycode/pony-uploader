@@ -41,6 +41,8 @@ class S3Signer {
 				if( error ) return reject( error )
 
 				resolve({
+					bucket: s3Params.Bucket,
+					key: s3Params.Key,
 					uploadUrl,
 					publicUrl: 'https://' + s3Params.Bucket + '.s3.amazonaws.com/' + s3Params.Key
 				})

@@ -6,15 +6,20 @@ class Uploader {
 	}
 
 	async upload( fileInfo, blob, onprogress ){
+		fileInfo.metadata = this._sanitizeMetadata( fileInfo.metadata )
+
 		const signedUploadInfo = await this._getSignedUpload( fileInfo )
+
 		await this._uploadToS3( signedUploadInfo, fileInfo, blob, onprogress )
 		return {
+			bucket: signedUploadInfo.bucket,
+			key: signedUploadInfo.key,
 			publicUrl: signedUploadInfo.publicUrl
 		}
 	}
 
 	async _uploadToS3( signedUploadResult, fileInfo, blob, progressCallback ){
-		const result = await this._performRequest({
+		const request = {
 			method: 'PUT',
 			url: signedUploadResult.uploadUrl,
 			headers: {
@@ -23,8 +28,32 @@ class Uploader {
 			},
 			body: blob,
 			onprogress: progressCallback
-		})
+		}
+
+		this._appendMetadataAsHeaders( request, fileInfo.metadata )
+
+		const result = await this._performRequest( request )
+
 		if( result.status !== 200 ) throw new Error( `Error uploading image: ${uploadResult.status}, ${uploadResult.text}`)
+	}
+
+	/**
+	 * S3 is picky about metadata: must be included in signature, values must be Strings, keys must be lowercase, hyphenated is most consistent
+	 */
+	_sanitizeMetadata = function( metadata ){
+		if( !metadata ) return null
+		const output = {}
+		for( let key in metadata ){
+			output[key.toLowerCase()] = String( metadata[key] )
+		}
+		return output
+	}
+
+	_appendMetadataAsHeaders( request, metadata ){
+		if( !metadata ) return
+		for( let key in metadata ){
+			request.headers[`x-amz-meta-${key}`] = metadata[key]
+		}
 	}
 
 	async _getSignedUpload( fileInfo ){

@@ -1,10 +1,11 @@
-const tiffTags = {
-	0x0112 : "Orientation",
-	0x0132 : "DateTime",
-	0x010F : "Make",
-	0x0110 : "Model"
-};
 import ImageUtils from './ImageUtils';
+
+const tiffTags = {
+	0x0112 : 'orientation',
+	0x0132 : 'dateTaken',
+	0x010F : 'cameraMake',
+	0x0110 : 'cameraModel'
+};
 
 class ImageExifReader {
 
