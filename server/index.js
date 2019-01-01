@@ -23,7 +23,8 @@ app.put( '/api/images/uploads/signature', async ( req, res ) => {
 			metadata: req.body.metadata
 		})
 	
-		// TODO: Store metadata to DB
+		// TODO: Store metadata and final S3 location to DB
+		// Have a job perform cleanup on stranded images
 	
 		res.send( upload )
 	}catch( e ){
