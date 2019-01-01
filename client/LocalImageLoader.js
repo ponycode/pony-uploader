@@ -2,7 +2,6 @@ import ImageExifReader from './ImageExifReader'
 import ImageUtils from './ImageUtils'
 
 class LocalImageLoader {
-
 	constructor( file ){
 		this.file = file
 		this.reader = null
@@ -30,20 +29,20 @@ class LocalImageLoader {
 		result.height = this.image.height
 
 		try{
-			result.exif = this.exif = new ImageExifReader( this.image ).read();
+			result.exif = this.exif = new ImageExifReader( this.image ).read()
 		}catch( e ){
 			console.error( `Error reading exif: ${e}` )
 		}
 
 		result.metadata = this._buildMetadata()
-		
+
 		return result
 	}
 
 	_buildMetadata( exif ){
 		// NOTE: all keys must be lowercase for s3 to work - performed later
 		// hyphenated keys work best for consistency
-		
+
 		const metadata = {}
 		metadata.filename = this.file.name
 		metadata.width = this.image.width
@@ -59,49 +58,48 @@ class LocalImageLoader {
 	}
 
 	_loadLocalFile( file ){
-		if( !file.type.match('image.*') ){
-			throw new Error(`The input file is not a supported image: ${file.type}`)
+		if( !file.type.match( 'image.*' ) ){
+			throw new Error( `The input file is not a supported image: ${file.type}` )
 		}
 
 		return new Promise( function( resolve, reject ){
 			const reader = new FileReader()
-	
+
 			reader.onload = function(){
 				resolve( this.result )
 			}
-	
+
 			reader.onabort = function(){
-				reject( new Error(`The file read was aborted: ${file.name}`) )
+				reject( new Error( `The file read was aborted: ${file.name}` ) )
 			}
-	
+
 			reader.onerror = function( error ){
-				reject( error || new Error(`An error occured while reading the file: ${file.name}`) )
+				reject( error || new Error( `An error occured while reading the file: ${file.name}` ) )
 			}
-	
+
 			reader.readAsDataURL( file )
-		})
+		} )
 	}
 
 	_createImageFromLocalFile( imageSrc, file ){
 		return new Promise( function( resolve, reject ){
 			const image = new Image()
-	
+
 			image.onload = function(){
 				resolve( image )
 			}
-	
-			image.onabort = function(){
-				reject( new Error(`Image load was aborted: ${file.name}`) )
-			}
-	
-			image.onerror = function( error ){
-				reject( error || new Error(`An error occured while loading image: ${file.name}`) )
-			}
-	
-			image.src = imageSrc
-		})
-	}
 
+			image.onabort = function(){
+				reject( new Error( `Image load was aborted: ${file.name}` ) )
+			}
+
+			image.onerror = function( error ){
+				reject( error || new Error( `An error occured while loading image: ${file.name}` ) )
+			}
+
+			image.src = imageSrc
+		} )
+	}
 }
 
 export default LocalImageLoader

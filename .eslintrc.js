@@ -19,5 +19,9 @@ module.exports = {
   },
   parserOptions: {
 	parser: 'babel-eslint'
+  },
+  globals: {
+    'XDomainRequest': false,
+    'xhr': false
   }
 }

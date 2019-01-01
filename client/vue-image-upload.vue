@@ -6,7 +6,7 @@
 			:style="{ width: width + 'px', height: height + 'px' }"
 			ref="dropZone"
 		>
-			<div 
+			<div
 				v-show="state === 'empty'"
 				class="panel dropPanel"
 				@dragenter.prevent="_dragEnter"
@@ -23,11 +23,11 @@
 				<h3 v-else>Drop Image</h3>
 			</div>
 			<div v-show="state !== 'empty'">
+				<div class="panel" ref="preview"></div>
 				<div class="uploadOverlay" v-show="state !== 'uploading'">
 					<p>Uploading</p>
 					<div class="progress"><div class="progressPercent"></div></div>
 				</div>
-				<div class="panel" ref="preview"></div>
 			</div>
 		</div>
 	</div>
@@ -37,7 +37,7 @@
 import LocalImageLoader from './LocalImageLoader.js'
 import ImageResize from './ImageResize.js'
 import Uploader from './Uploader.js'
-import ImageUtils from './ImageUtils.js';
+import ImageUtils from './ImageUtils.js'
 
 export default {
 	name: 'vue-image-upload',
@@ -93,7 +93,7 @@ export default {
 	},
 	methods: {
 		_selectedFile( e ){
-			const [file] = event.target.files;
+			const [file] = event.target.files
 			if( !file ) return
 			this._loadFile( file )
 		},
@@ -120,7 +120,7 @@ export default {
 			}
 
 			const loadedImage = await new LocalImageLoader( file ).load()
-		
+
 			const resizeOptions = {
 				width: this.imageWidth,
 				height: this.imageHeight,
@@ -136,7 +136,7 @@ export default {
 		},
 		async upload(){
 			this.state = 'uploading'
-				
+
 			const fileInfo = {
 				filename: this.image.file.name,
 				filesize: this.image.file.size,
@@ -146,9 +146,12 @@ export default {
 
 			try {
 				const blob = ImageUtils.imageToBlob( this.image.image, this.image.file.type )
-				const uploader = new Uploader( this.signatureUrl )	
-				this.uploadedImage = await uploader.upload( fileInfo, blob, percent => { this.uploadPercent = percent })
-				console.log( 'Image uploaded: ', this.uploadedImage );
+				const uploader = new Uploader( this.signatureUrl )
+				this.uploadedImage = await uploader.upload( fileInfo, blob, percent => { this.uploadPercent = percent } )
+				console.log( 'Image uploaded: ', this.uploadedImage )
+
+				this.imageUrl = this.uploadedImage.publicUrl
+				this.state = 'populated'
 			} catch( e ) {
 				// TODO: handle error
 				console.error( 'Error uploading image', e )

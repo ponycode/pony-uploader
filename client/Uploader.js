@@ -1,6 +1,4 @@
-
 class Uploader {
-
 	constructor( getSignedUploadApiUrl ){
 		this.getSignedUploadApiUrl = getSignedUploadApiUrl
 	}
@@ -34,7 +32,7 @@ class Uploader {
 
 		const result = await this._performRequest( request )
 
-		if( result.status !== 200 ) throw new Error( `Error uploading image: ${uploadResult.status}, ${uploadResult.text}`)
+		if( result.status !== 200 ) throw new Error( `Error uploading image: ${result.status}, ${result.text}` )
 	}
 
 	/**
@@ -57,14 +55,14 @@ class Uploader {
 	}
 
 	async _getSignedUpload( fileInfo ){
-		const result = await this._performJsonRequest({
+		const result = await this._performJsonRequest( {
 			method: 'PUT',
 			url: this.getSignedUploadApiUrl,
 			json: fileInfo
-		});
+		} )
 
 		if( result.json && result.json.uploadUrl ){
-			return result.json;
+			return result.json
 		}else{
 			throw new Error( `Error signing upload: no data returned: ${result.text}` )
 		}
@@ -84,29 +82,30 @@ class Uploader {
 	}
 
 	_performRequest( request ){
-		if( !request.method ) throw new Error('method is required')
-		if( !request.url ) throw new Error('url is required')
+		if( !request.method ) throw new Error( 'method is required' )
+		if( !request.url ) throw new Error( 'url is required' )
 
 		const xhr = this._createCORSRequest( request.method, request.url )
-		if( !xhr ) throw new Error( 'File uploads are not supported by this browser.' );
+		if( !xhr ) throw new Error( 'File uploads are not supported by this browser.' )
+
+		for( let header in request.headers ){
+			xhr.setRequestHeader( header, request.headers[header] )
+		}
 
 		return new Promise( function( resolve, reject ){
-
-			for( let header in request.headers ){
-				xhr.setRequestHeader( header, request.headers[header] );
-			}
-
 			xhr.onload = function(){
-				resolve({ status: xhr.status, text: xhr.responseText, xhr })
+				resolve( { status: xhr.status, text: xhr.responseText, xhr } )
 			}
-	
-			xhr.onerror = function( error ){
-				reject( new Error( `A file upload error occurred: ${xhr.status}` ) )
+
+			xhr.onerror = function( e ){
+				const error = new Error( `A file upload error occurred: ${xhr.status}` )
+				error.cause = e
+				reject( error )
 			}
-	
+
 			if( xhr.upload && request.onprogress ){
 				xhr.upload.onprogress = function( e ){
-					const percent = Math.round(( e.loaded / e.total ) * 100 )
+					const percent = Math.round( ( e.loaded / e.total ) * 100 )
 					request.onprogress( percent )
 				}
 			}
@@ -124,20 +123,19 @@ class Uploader {
 			}catch( e ){
 				reject( e )
 			}
-		});
+		} )
 	}
 
 	_createCORSRequest( method, url ){
-		const xhr = new XMLHttpRequest()
-		if( xhr.withCredentials !== null ){
-			xhr.open( method, url, true )
+		let corsRequest = new XMLHttpRequest()
+		if( corsRequest.withCredentials !== null ){
+			corsRequest.open( method, url, true )
 		}else if( typeof XDomainRequest !== 'undefined' ){
-			xhr = new XDomainRequest()
-			xhr.open( method, url )
+			corsRequest = new XDomainRequest()
+			corsRequest.open( method, url )
 		}
-		return xhr
+		return corsRequest
 	}
-
 }
 
-export default Uploader;
+export default Uploader
