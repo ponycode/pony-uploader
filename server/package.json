@@ -9,6 +9,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
+    "@google-cloud/storage": "^2.3.4",
     "aws-sdk": "^2.382.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4"

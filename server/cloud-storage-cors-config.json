@@ -1,0 +1,13 @@
+[
+	{
+		"origin": [
+			"http://localhost:8000",
+			"*"
+		],
+		"responseHeader": ["Origin", "Access-Control-Allow-Methods", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Referrer", "User-Agent", "Accept", "X-Requested-With", "Authorization", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token"],
+		"method": [
+			"*"
+		],
+		"maxAgeSeconds": 1
+	}
+]

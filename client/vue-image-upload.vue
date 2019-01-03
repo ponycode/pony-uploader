@@ -23,11 +23,22 @@
 				<h3 v-else>Drop Image</h3>
 			</div>
 			<div v-show="state !== 'empty'">
-				<div class="panel" ref="preview"></div>
-				<div class="uploadOverlay" v-show="state !== 'uploading'">
+				<div class="panel" ref="preview"><img v-if="value && value.publicUrl" :src="value.publicUrl" /></div>
+
+				<div class="panel uploadOverlay" v-show="state === 'uploading'">
 					<p>Uploading</p>
-					<div class="progress"><div class="progressPercent"></div></div>
+					<div class="progress"><div class="progressPercent" :style="{ width: uploadPercent + '%' }"></div></div>
 				</div>
+
+				<a class="clearButton" x-v-show="state === 'populated'" @click="_clearImage">
+					<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+						<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+							<g id="Artboard" fill="#D40000" fill-rule="nonzero">
+								<path d="M100,200 C44.771525,200 0,155.228475 0,100 C0,44.771525 44.771525,0 100,0 C155.228475,0 200,44.771525 200,100 C200,155.228475 155.228475,200 100,200 Z M100,78.7867966 L64.6446609,43.4314575 C58.7867966,37.5735931 49.2893219,37.5735931 43.4314575,43.4314575 C37.5735931,49.2893219 37.5735931,58.7867966 43.4314575,64.6446609 L78.7867966,100 L43.4314575,135.355339 C37.5735931,141.213203 37.5735931,150.710678 43.4314575,156.568542 C49.2893219,162.426407 58.7867966,162.426407 64.6446609,156.568542 L100,121.213203 L135.355339,156.568542 C141.213203,162.426407 150.710678,162.426407 156.568542,156.568542 C162.426407,150.710678 162.426407,141.213203 156.568542,135.355339 L121.213203,100 L156.568542,64.6446609 C162.426407,58.7867966 162.426407,49.2893219 156.568542,43.4314575 C150.710678,37.5735931 141.213203,37.5735931 135.355339,43.4314575 L100,78.7867966 Z" id="cancel-button"></path>
+							</g>
+						</g>
+					</svg>
+				</a>
 			</div>
 		</div>
 	</div>
@@ -36,14 +47,16 @@
 <script>
 import LocalImageLoader from './LocalImageLoader.js'
 import ImageResize from './ImageResize.js'
-import Uploader from './Uploader.js'
 import ImageUtils from './ImageUtils.js'
+import UploadSigner from './UploadSigner.js'
+import S3Uploader from './S3Uploader.js'
+import CloudStorageUploader from './CloudStorageUploader.js'
 
 export default {
 	name: 'vue-image-upload',
 	props: {
-		imageUrl: {
-			type: String,
+		value: {
+			type: Object,
 			required: false
 		},
 		signatureUrl: {
@@ -88,7 +101,8 @@ export default {
 			dropZoneClass: 'dropZoneDefault',
 			image: null,
 			acceptDrop: false,
-			uploadedImage: null
+			uploadedImage: null,
+			uploadPercent: 0
 		}
 	},
 	methods: {
@@ -136,6 +150,7 @@ export default {
 		},
 		async upload(){
 			this.state = 'uploading'
+			this.uploadPercent = 0
 
 			const fileInfo = {
 				filename: this.image.file.name,
@@ -145,30 +160,49 @@ export default {
 			}
 
 			try {
-				const blob = ImageUtils.imageToBlob( this.image.image, this.image.file.type )
-				const uploader = new Uploader( this.signatureUrl )
-				this.uploadedImage = await uploader.upload( fileInfo, blob, percent => { this.uploadPercent = percent } )
-				console.log( 'Image uploaded: ', this.uploadedImage )
+				const uploadSigner = new UploadSigner( this.signatureUrl )
 
-				this.imageUrl = this.uploadedImage.publicUrl
-				this.state = 'populated'
+				const signedUploadResult = await uploadSigner.signUpload( fileInfo )
+				const uploader = this._uploaderForSignedUploadResult( signedUploadResult )
+				const blob = ImageUtils.imageToBlob( this.image.image, this.image.file.type )
+
+				this.uploadedImage = await uploader.upload( signedUploadResult, blob, percent => {
+					this.uploadPercent = percent
+				} )
+
+				console.log( 'Image uploaded: ', this.uploadedImage )
+				this.$emit( 'input', this.uploadedImage )
 			} catch( e ) {
-				// TODO: handle error
-				console.error( 'Error uploading image', e )
+				console.error( 'Error uploading image', e ) // TODO: handle error
+			}
+		},
+		_uploaderForSignedUploadResult( signedUploadResult ){
+			if( signedUploadResult.service === 's3' ){
+				return new S3Uploader()
+			}else if( signedUploadResult.service === 'cloudStorage' ){
+				return new CloudStorageUploader()
+			}else{
+				throw new Error( `Unknown upload service: ${signedUploadResult.service}` )
 			}
 		},
 		_clearImage(){
 			this.image = null
 			this.$refs.preview.innerHTML = ''
 			this.state = 'empty'
-		},
-		_uploadImage(){
-
+			this.$emit( 'input', null )
 		}
 	},
-	mounted (){
-		if( this.imageUrl ) this.state = 'populated'
-		this.initialState = this.state
+	watch: {
+		value: {
+			immediate: true,
+			handler( val ){
+				if( val && val.publicUrl ){
+					this.state = 'populated'
+					return
+				}
+				this.state = 'empty'
+			}
+		}
 	}
 }
 </script>
@@ -227,16 +261,33 @@ export default {
 		}
 	}
 
-	.cancelButton {
+	.clearButton {
 		@extend .previewButton;
 		bottom: 10px;
 		left: 10px;
 	}
 
-	.uploadButton{
-		@extend .previewButton;
-		bottom: 10px;
-		right: 10px;
+	.uploadOverlay {
+		background-color: rgba( 0, 0, 0, 0.4 );
+		color: #fff;
+
+		.progress{
+			width: 80%;
+			height: 6px;
+			border: 1px solid silver;
+			border-radius: 2px;
+			background-color: white;
+			margin: 0 auto;
+			padding: 0;
+
+			.progressPercent{
+				width: 0;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				background-color: red;
+			}
+		}
 	}
 }
 
@@ -271,7 +322,7 @@ export default {
 }
 
 .dropZoneDefault {
-	border: 3px dashed silver;
+	border: 1px solid silver;
 }
 
 .dropZoneDrop {
@@ -288,24 +339,6 @@ export default {
 
 h3 {
 	margin: 0 0 4px 0;
-}
-
-.progress{
-	width: 80%;
-	height: 6px;
-	border: 1px solid silver;
-	border-radius: 2px;
-	background-color: white;
-	margin: 0 auto;
-	padding: 0;
-
-	.progressPercent{
-		width: 0;
-		height: 100%;
-		margin: 0;
-		padding: 0;
-		background-color: red;
-	}
 }
 
 </style>

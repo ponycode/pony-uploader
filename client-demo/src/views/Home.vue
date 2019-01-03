@@ -1,10 +1,8 @@
 <template>
-  <div class="hello">
-    <h1>Demo</h1>
-    <vue-image-upload ref="uploader" signature-url="/api/images/uploads/signature" :width="200" :height="200" :imageWidth="400" :imageHeight="400"></vue-image-upload>
-    <br/>
-    <button @click="upload">Upload</button>
-  </div>
+	<div class="hello">
+		<h1>Vue-Image-Upload Demo</h1>
+		<vue-image-upload v-model="image" ref="uploader" signature-url="/api/images/uploads/cloudStorage/signature" x-signature-url="/api/images/uploads/s3/signature" :width="200" :height="200" :imageWidth="400" :imageHeight="400"></vue-image-upload>
+	</div>
 </template>
 
 <script>
@@ -14,12 +12,14 @@ export default {
 	name: 'home',
 	components: {
 		VueImageUpload
-  },
-  methods: {
-    async upload(){
-      this.$refs.uploader.upload();
-    }
-  }
+	},
+	data () {
+		return {
+			image: {
+				publicUrl: 'https://pony-upload-test.s3.amazonaws.com/test/IMG_3410.jpg'
+			}
+		}
+	}
 }
 
 </script>

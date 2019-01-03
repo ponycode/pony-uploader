@@ -45,4 +45,19 @@ since it will only be used to PUT images. Here is an example policy:
 Next, copy the user's key id and secret and set them up as environment variables for your server.
 
 
+## Setting up Google Cloud Storage
+
+1. Create a project in the google cloud console.
+
+2. Create a service account and download the credentials JSON file.
+
+3. Install the google cloud command line utility and authenticate.
+
+3. Setup a CORS policy on your bucket. Run the command below:
+
+```
+gsutil cors set ./cloud-storage-cors-config.json gs://[your-bucket-name-here]
+```
+
+Be sure to set your bucket name and provide a proper CORS config file.
 

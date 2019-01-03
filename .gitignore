@@ -4,3 +4,4 @@ node_modules
 .grunt
 /.vscode
 /server/start.sh
+/server/pony-uploader-824979d2a049.json
