@@ -15,6 +15,7 @@
 				@drop.prevent="_drop"
 				@click="$refs.fileInput.click()"
 			>
+				<upload-icon class="uploadIcon"></upload-icon>
 				<label v-if="!acceptDrop" class="selectFile">
 					<input type="file" accept="image/png, image/jpeg, image/jpg" multiple="false" @change="_selectedFile" ref="fileInput" />
 					Select Image
@@ -51,9 +52,13 @@ import ImageUtils from './ImageUtils.js'
 import UploadSigner from './UploadSigner.js'
 import S3Uploader from './S3Uploader.js'
 import CloudStorageUploader from './CloudStorageUploader.js'
+import UploadIcon from './upload-icon'
 
 export default {
 	name: 'vue-image-upload',
+	components: {
+		UploadIcon
+	},
 	props: {
 		value: {
 			type: Object,
@@ -209,10 +214,36 @@ export default {
 
 <style scoped lang="scss">
 
+$blue: #4A90E2;
+$red: red;
+
 .ponyImage{
 	display: inline-block;
 	position: relative;
 	overflow: hidden;
+	border: 1px solid silver;
+
+	.uploadIcon {
+		max-width: 50px;
+		height: auto;
+		margin: 0 auto;
+
+		/deep/ path {
+			fill: $blue;
+		}
+	}
+
+	.uploadIconRed {
+		/deep/ path {
+			fill: $red;
+		}
+	}
+
+	.uploadIconWhite {
+		/deep/ path {
+			fill: #fff;
+		}
+	}
 
 	.details {
 		font-size: 12px;
@@ -233,6 +264,7 @@ export default {
 
 	.selectFile {
 		cursor: pointer;
+		color: $blue;
 
 		input {
 			display: none;
@@ -274,9 +306,7 @@ export default {
 		.progress{
 			width: 80%;
 			height: 6px;
-			border: 1px solid silver;
-			border-radius: 2px;
-			background-color: white;
+			background-color: rgba( 0, 0, 0, 0.8 );
 			margin: 0 auto;
 			padding: 0;
 
@@ -285,7 +315,7 @@ export default {
 				height: 100%;
 				margin: 0;
 				padding: 0;
-				background-color: red;
+				background-color: white;
 			}
 		}
 	}
@@ -319,26 +349,6 @@ export default {
 		width: 100%;
 		transform: translateX(-50%) translateY(-50%);
 	}
-}
-
-.dropZoneDefault {
-	border: 1px solid silver;
-}
-
-.dropZoneDrop {
-	border: 3px dashed red;
-}
-
-.dropZoneUploading {
-	border: 3px dashed green;
-}
-
-.dropZoneComplete {
-	border: 3px dashed blue;
-}
-
-h3 {
-	margin: 0 0 4px 0;
 }
 
 </style>

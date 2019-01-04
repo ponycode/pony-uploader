@@ -25,9 +25,9 @@ export default {
 	},
 	data () {
 		return {
-			image: {
-				publicUrl: 'https://pony-upload-test.s3.amazonaws.com/test/IMG_3410.jpg'
-			}
+			// image: {
+			// 	publicUrl: 'https://pony-upload-test.s3.amazonaws.com/test/IMG_3410.jpg'
+			// }
 		}
 	}
 }
