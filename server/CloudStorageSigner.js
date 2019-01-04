@@ -17,13 +17,14 @@ class S3Signer extends AbstractSigner {
 	}
 
 	async signUpload( uploadInfo ){
-		const metadata = this._sanitizeMetadata( uploadInfo.metadata )
+		let metadata = this._sanitizeMetadata( uploadInfo.metadata )
+		metadata = this._updateMetadataForCloudStorage( metadata )
 
 		const options = {
 			action: 'write',
 			expires: Date.now() + 1000 * 60,
 			contentType: uploadInfo.filetype,
-			//metadata
+			extensionHeaders: metadata
 		}
 
 		const [uploadUrl] = await this.storage
@@ -37,7 +38,7 @@ class S3Signer extends AbstractSigner {
 			key: uploadInfo.Key,
 			uploadUrl,
 			filetype: uploadInfo.filetype,
-			metadata: null,
+			metadata: metadata,
 			publicUrl: `https://console.cloud.google.com/storage/browser/${this.options.bucket}/${uploadInfo.key}`
 		}
 	}
@@ -51,7 +52,7 @@ class S3Signer extends AbstractSigner {
 		return newMetadata
 	}
 
-	_updateMetadata( metadata ){
+	_updateMetadataForCloudStorage( metadata ){
 		if( !metadata ) return
 		const newMetadata = {}
 		for( let key in metadata ){

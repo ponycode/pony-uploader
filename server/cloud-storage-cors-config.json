@@ -4,7 +4,17 @@
 			"http://localhost:8000",
 			"*"
 		],
-		"responseHeader": ["Origin", "Access-Control-Allow-Methods", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Referrer", "User-Agent", "Accept", "X-Requested-With", "Authorization", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token"],
+		"responseHeader": [
+			"Content-Type",
+			"x-goog-meta-exif-camera-make",
+			"x-goog-meta-exif-camera-model",
+			"x-goog-meta-exif-date-taken",
+			"x-goog-meta-filename",
+			"x-goog-meta-height",
+			"x-goog-meta-original-height",
+			"x-goog-meta-original-width",
+			"x-goog-meta-width"
+		],
 		"method": [
 			"*"
 		],
