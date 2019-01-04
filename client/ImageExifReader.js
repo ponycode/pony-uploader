@@ -63,10 +63,10 @@ class ImageExifReader {
 	_readEXIFData( start ){
 		const tiffHeaderOffset = start + 6
 
-		this._chooseEndianessFromTiffHeader( tiffHeaderOffset );
+		this._chooseEndianessFromTiffHeader( tiffHeaderOffset )
 
 		if( !this._isValidExifStructure( start ) ) return null
-	
+
 		const firstIFDOffset = this.dataView.getUint32( tiffHeaderOffset + 4, this.isLittleEndian )
 		if( firstIFDOffset < 0x00000008 ) return null
 
@@ -74,14 +74,12 @@ class ImageExifReader {
 	}
 
 	_readTags( tiffStart, dirStart ){
-		const entries = this.dataView.getUint16( dirStart, this.isLittleEndian )
+		const numberOfEntries = this.dataView.getUint16( dirStart, this.isLittleEndian )
 		const tags = {}
-		let entryOffset = 0
-		let tag = null
 
-		for( var i = 0; i < entries; i++ ){
-			entryOffset = dirStart + i * 12 + 2
-			tag = tiffTags[ this.dataView.getUint16( entryOffset, this.isLittleEndian ) ]
+		for( let i = 0; i < numberOfEntries; i++ ){
+			const entryOffset = dirStart + i * 12 + 2 // each entry is 12 bytes
+			const tag = tiffTags[ this.dataView.getUint16( entryOffset, this.isLittleEndian ) ]
 			if( !tag ) continue
 			tags[tag] = this._readTagValue( entryOffset, tiffStart )
 		}
@@ -92,22 +90,23 @@ class ImageExifReader {
 	_readTagValue( entryOffset, tiffStart ){
 		const type = this.dataView.getUint16( entryOffset + 2, this.isLittleEndian )
 		const numValues = this.dataView.getUint32( entryOffset + 4, this.isLittleEndian )
-		const valueOffset = this.dataView.getUint32( entryOffset + 8, this.isLittleEndian ) + tiffStart
-		let offset
+		const inlineValueOffset = entryOffset + 8
+		const externalValueOffset = tiffStart + this.dataView.getUint32( inlineValueOffset, this.isLittleEndian )
 
 		switch( type ){
 		case 2: // ascii, 8-bit byte
-			offset = numValues > 4 ? valueOffset : ( entryOffset + 8 )
-			return this._getStringFromBuffer( this.dataView, offset, numValues - 1 )
+			const valueOffset = numValues > 4 ? externalValueOffset : inlineValueOffset
+			return this._getStringFromBuffer( this.dataView, valueOffset, numValues - 1 )
 
 		case 3: // short, 16 bit int
 			if( numValues === 1 ){
-				return this.dataView.getUint16( entryOffset + 8 )
+				return this.dataView.getUint16( inlineValueOffset )
 			} else {
-				offset = numValues > 2 ? valueOffset : ( entryOffset + 8 )
-				var vals = []
-				for( var n = 0; n < numValues; n++ ){
-					vals[n] = this.dataView.getUint16( offset + 2 * n )
+				const valuesOffset = numValues > 2 ? externalValueOffset : inlineValueOffset
+				const vals = []
+				for( let n = 0; n < numValues; n++ ){
+					const valuesItemOffset = n * 2
+					vals[n] = this.dataView.getUint16( valuesOffset + valuesItemOffset )
 				}
 				return vals
 			}
