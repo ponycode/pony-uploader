@@ -1,46 +1,44 @@
 <template>
-	<div class="ponyImage">
+	<div
+		class="ponyImage"
+		:class="dropZoneClass"
+		:style="{ width: width + 'px', height: height + 'px' }"
+		ref="dropZone"
+	>
 		<div
-			class="dropZone"
-			:class="dropZoneClass"
-			:style="{ width: width + 'px', height: height + 'px' }"
-			ref="dropZone"
+			v-show="state === 'empty'"
+			class="panel dropPanel"
+			@dragenter.prevent="_dragEnter"
+			@dragleave.prevent="_dragLeave"
+			@dragover.prevent="_dragOver"
+			@drop.prevent="_drop"
+			@click="$refs.fileInput.click()"
 		>
-			<div
-				v-show="state === 'empty'"
-				class="panel dropPanel"
-				@dragenter.prevent="_dragEnter"
-				@dragleave.prevent="_dragLeave"
-				@dragover.prevent="_dragOver"
-				@drop.prevent="_drop"
-				@click="$refs.fileInput.click()"
-			>
-				<upload-icon class="uploadIcon"></upload-icon>
-				<label v-if="!acceptDrop" class="selectFile">
-					<input type="file" accept="image/png, image/jpeg, image/jpg" multiple="false" @change="_selectedFile" ref="fileInput" />
-					Select Image
-					<p class="details">{{imageWidth}} x {{imageHeight}} jpg or png</p>
-				</label>
-				<h3 v-else>Drop Image</h3>
+			<input type="file" accept="image/png, image/jpeg, image/jpg, image/gif" multiple="false" @change="_selectedFile" ref="fileInput" />
+			<upload-icon class="uploadIcon"></upload-icon>
+			<p v-if="!acceptDrop">Select Image</p>
+			<p v-else>Drop Image</p>
+		</div>
+		<div v-show="state !== 'empty'">
+			<div class="panel previewPanel" ref="preview">
+				<img :src="previewSrc" />
 			</div>
-			<div v-show="state !== 'empty'">
-				<div class="panel" ref="preview"><img v-if="value && value.publicUrl" :src="value.publicUrl" /></div>
 
-				<div class="panel uploadOverlay" v-show="state === 'uploading'">
-					<p>Uploading</p>
-					<div class="progress"><div class="progressPercent" :style="{ width: uploadPercent + '%' }"></div></div>
-				</div>
+			<div class="panel uploadOverlay" v-show="state === 'uploading'">
+				<upload-icon class="uploadIcon uploadIconWhite"></upload-icon>
+				<p>Uploading</p>
+				<div class="progress"><div class="progressPercent" :style="{ width: uploadPercent + '%' }"></div></div>
+			</div>
 
-				<a class="clearButton" x-v-show="state === 'populated'" @click="_clearImage">
-					<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-						<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-							<g id="Artboard" fill="#D40000" fill-rule="nonzero">
-								<path d="M100,200 C44.771525,200 0,155.228475 0,100 C0,44.771525 44.771525,0 100,0 C155.228475,0 200,44.771525 200,100 C200,155.228475 155.228475,200 100,200 Z M100,78.7867966 L64.6446609,43.4314575 C58.7867966,37.5735931 49.2893219,37.5735931 43.4314575,43.4314575 C37.5735931,49.2893219 37.5735931,58.7867966 43.4314575,64.6446609 L78.7867966,100 L43.4314575,135.355339 C37.5735931,141.213203 37.5735931,150.710678 43.4314575,156.568542 C49.2893219,162.426407 58.7867966,162.426407 64.6446609,156.568542 L100,121.213203 L135.355339,156.568542 C141.213203,162.426407 150.710678,162.426407 156.568542,156.568542 C162.426407,150.710678 162.426407,141.213203 156.568542,135.355339 L121.213203,100 L156.568542,64.6446609 C162.426407,58.7867966 162.426407,49.2893219 156.568542,43.4314575 C150.710678,37.5735931 141.213203,37.5735931 135.355339,43.4314575 L100,78.7867966 Z" id="cancel-button"></path>
-							</g>
+			<a class="clearButton" v-show="state === 'populated'" @click="_clearImage">
+				<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+					<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+						<g id="Artboard" fill="#D40000" fill-rule="nonzero">
+							<path d="M100,200 C44.771525,200 0,155.228475 0,100 C0,44.771525 44.771525,0 100,0 C155.228475,0 200,44.771525 200,100 C200,155.228475 155.228475,200 100,200 Z M100,78.7867966 L64.6446609,43.4314575 C58.7867966,37.5735931 49.2893219,37.5735931 43.4314575,43.4314575 C37.5735931,49.2893219 37.5735931,58.7867966 43.4314575,64.6446609 L78.7867966,100 L43.4314575,135.355339 C37.5735931,141.213203 37.5735931,150.710678 43.4314575,156.568542 C49.2893219,162.426407 58.7867966,162.426407 64.6446609,156.568542 L100,121.213203 L135.355339,156.568542 C141.213203,162.426407 150.710678,162.426407 156.568542,156.568542 C162.426407,150.710678 162.426407,141.213203 156.568542,135.355339 L121.213203,100 L156.568542,64.6446609 C162.426407,58.7867966 162.426407,49.2893219 156.568542,43.4314575 C150.710678,37.5735931 141.213203,37.5735931 135.355339,43.4314575 L100,78.7867966 Z" id="cancel-button"></path>
 						</g>
-					</svg>
-				</a>
-			</div>
+					</g>
+				</svg>
+			</a>
 		</div>
 	</div>
 </template>
@@ -101,12 +99,11 @@ export default {
 	},
 	data: function(){
 		return {
-			state: 'empty', // empty, populated, dropping, uploading,
+			state: 'empty', // empty, populated, uploading,
 			initialState: 'empty',
 			dropZoneClass: 'dropZoneDefault',
-			image: null,
 			acceptDrop: false,
-			uploadedImage: null,
+			image: null,
 			uploadPercent: 0
 		}
 	},
@@ -134,7 +131,7 @@ export default {
 		},
 		async _loadFile( file ){
 			if( !this.isAllowedFileType( file ) ){
-				this.$emit( 'error', new Error( `Selected file must be a .png or .jpg file.` ) )
+				this.$emit( 'error', new Error( `Selected file must be a PNG, JPG, or GIF file.` ) )
 				return
 			}
 
@@ -145,23 +142,22 @@ export default {
 				height: this.imageHeight,
 				jpgQuality: this.jpgQuality
 			}
+
 			this.image = await ImageResize.resizeLoadedImage( loadedImage, resizeOptions )
-			this.$refs.preview.innerHTML = ''
-			this.$refs.preview.appendChild( this.image.image )
-			this.upload()
+			this.upload( this.image  )
 		},
 		isAllowedFileType( file ){
 			return ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'].indexOf( file.type ) !== -1
 		},
-		async upload(){
+		async upload( image ){
 			this.state = 'uploading'
 			this.uploadPercent = 0
 
 			const fileInfo = {
-				filename: this.image.file.name,
-				filesize: this.image.file.size,
-				filetype: this.image.file.type,
-				metadata: this.image.metadata
+				filename: image.file.name,
+				filesize: image.file.size,
+				filetype: image.file.type,
+				metadata: image.metadata
 			}
 
 			try {
@@ -169,14 +165,17 @@ export default {
 
 				const signedUploadResult = await uploadSigner.signUpload( fileInfo )
 				const uploader = this._uploaderForSignedUploadResult( signedUploadResult )
-				const blob = ImageUtils.imageToBlob( this.image.image, this.image.file.type )
+				const blob = ImageUtils.imageToBlob( image.image, image.file.type )
 
-				this.uploadedImage = await uploader.upload( signedUploadResult, blob, percent => {
+				const result = await uploader.upload( signedUploadResult, blob, percent => {
 					this.uploadPercent = percent
 				} )
 
-				console.log( 'Image uploaded: ', this.uploadedImage )
-				this.$emit( 'input', this.uploadedImage )
+				console.log( 'Image uploaded: ', result )
+				this.$emit( 'input', result )
+
+				this.image = null
+
 			} catch( e ) {
 				console.error( 'Error uploading image', e ) // TODO: handle error
 			}
@@ -192,9 +191,16 @@ export default {
 		},
 		_clearImage(){
 			this.image = null
-			this.$refs.preview.innerHTML = ''
+			this.value = null
 			this.state = 'empty'
 			this.$emit( 'input', null )
+		}
+	},
+	computed: {
+		previewSrc(){
+			if( this.value && this.value.publicUrl ) return this.value.publicUrl
+			if( this.image && this.image.image ) return this.image.image.src
+			return null
 		}
 	},
 	watch: {
@@ -222,6 +228,35 @@ $red: red;
 	position: relative;
 	overflow: hidden;
 	border: 1px solid silver;
+
+	.dropPanel {
+		cursor: pointer;
+		color: $blue;
+
+		input[type=file] {
+			display: none;
+		}
+
+		p {
+			margin: 0;
+		}
+
+		& /deep/ img {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 100%;
+			transform: translateX(-50%) translateY(-50%);
+		}
+
+		&:hover {
+			text-decoration: underline;
+		}
+
+		* {
+			pointer-events: none;
+		}
+	}
 
 	.uploadIcon {
 		max-width: 50px;
@@ -262,25 +297,22 @@ $red: red;
 		text-align: center;
 	}
 
-	.selectFile {
-		cursor: pointer;
-		color: $blue;
+	.previewPanel {
 
-		input {
-			display: none;
+		/deep/ img {
+			width: 100%;
+			height: 100%;
+			height: auto;
 		}
+
 	}
 
-	&:hover {
-		.selectFile {
-			text-decoration: underline;
-		}
-	}
-
-	.previewButton {
+	.clearButton {
 		position: absolute;
 		width: 30px;
 		height: 30px;
+		left: 10px;
+		bottom: 10px;
 		transition: transform 0.3s;
 
 		svg {
@@ -293,19 +325,20 @@ $red: red;
 		}
 	}
 
-	.clearButton {
-		@extend .previewButton;
-		bottom: 10px;
-		left: 10px;
-	}
-
 	.uploadOverlay {
 		background-color: rgba( 0, 0, 0, 0.4 );
 		color: #fff;
 
+		p {
+			margin: 0 auto;
+		}
+
 		.progress{
-			width: 80%;
-			height: 6px;
+			position: absolute;
+			left: 10%;
+			right: 10%;
+			bottom: 5%;
+			height: 4px;
 			background-color: rgba( 0, 0, 0, 0.8 );
 			margin: 0 auto;
 			padding: 0;
@@ -318,36 +351,6 @@ $red: red;
 				background-color: white;
 			}
 		}
-	}
-}
-
-.dropPanel {
-	* {
-		pointer-events: none;
-	}
-}
-
-.dropZone {
-	display: inline-block;
-	position: relative;
-	overflow: hidden;
-	cursor: pointer;
-
-	canvas {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba( 99, 0, 0, 0.2 );
-	}
-
-	& /deep/ img {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		width: 100%;
-		transform: translateX(-50%) translateY(-50%);
 	}
 }
 
