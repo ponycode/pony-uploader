@@ -6,5 +6,8 @@ module.exports = {
 				secure: false
 			}
 		}
+	},
+	configureWebpack: {
+		devtool: 'source-map'
 	}
 }

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import VueImageUpload from '../../../client/vue-image-upload'
+import VueImageUpload from '../../../../client/vue-image-upload'
 
 export default {
 	name: 'home',

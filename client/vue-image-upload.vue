@@ -144,7 +144,7 @@ export default {
 			}
 
 			this.image = await ImageResize.resizeLoadedImage( loadedImage, resizeOptions )
-			this.upload( this.image  )
+			this.upload( this.image )
 		},
 		isAllowedFileType( file ){
 			return ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'].indexOf( file.type ) !== -1
@@ -175,7 +175,6 @@ export default {
 				this.$emit( 'input', result )
 
 				this.image = null
-
 			} catch( e ) {
 				console.error( 'Error uploading image', e ) // TODO: handle error
 			}

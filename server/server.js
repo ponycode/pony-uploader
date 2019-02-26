@@ -4,6 +4,9 @@ const app = express()
 const bodyParser = require('body-parser')
 const PORT = process.env.PORT || 3000
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const S3Signer = require('./S3Signer')
 const s3Signer = new S3Signer({
 	s3AccessKeyId: process.env.S3_ACCESS_KEY_ID,
@@ -14,7 +17,7 @@ const s3Signer = new S3Signer({
 const CloudStorageSigner = require('./CloudStorageSigner')
 const cloudStorageSigner = new CloudStorageSigner({
 	projectId: process.env.CLOUD_STORAGE_PROJECT_ID,
-	credentials: require( './pony-uploader-824979d2a049' ),
+	credentials: require('./pony-uploader-232215-8bab2f1d42af.json'), //require( './pony-uploader-824979d2a049' ),
 	bucket: process.env.CLOUD_STORAGE_BUCKET
 })
 

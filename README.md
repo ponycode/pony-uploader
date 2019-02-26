@@ -1,32 +1,31 @@
 # pony-uploader
 
-Pony uploader is a simple drag & drop image uploader which will send image directly to Amazon S3. This project contains
-a server component which will work well with express, a client side component, and a full example project. Pony-uploader uses several
-HTML5 features and will probably not work on older browsers.
+Pony uploader is a simple drag & drop image uploader which will send image directly to Amazon S3. This project contains a server component which will work well with express, a client side component, and a full example project. Pony-uploader uses several HTML5 features and will probably not work on older browsers.
 
 
 ## Getting Started
-Clone the repo [https://github.com/ponycode/s3-file-upload](https://github.com/ponycode/s3-file-upload) and run `npm install`.
+Clone the repo [https://github.com/ponycode/pony-uploader.git](https://github.com/ponycode/pony-uploader.git) and run `npm install`.
+
 Next, go into the example folder and run `npm install`. To start the server run `node app/apps.js` and go to http://localhost:3000 in a browser.
 
 ```bash
-$ git clone https://github.com/ponycode/s3-file-upload
-$ cd s3-file-upload
+$ git clone https://github.com/ponycode/pony-uploader
+$ cd pony-uploader
 $ npm install
 $ cd example
 $ npm install
-$ node app/app.js
+$ node server.js
 ```
 
 # Picking the client apart
 The client is made of 3 components: an image resizer, an uploader, and a jQuery plugin. If you don't wish to use the HTML & CSS provided
-by pony-debugger you can use the image resizer and uploader independently.
+by pony-uploader, you can use the image resizer and uploader independently.
 
 ### The uploader
 
-* getSignedUpload( signatureUrl, fileData, callback ) - This method will call your server to get a signed S3 upload url. The response will contain the upload url, the complete url, and what will be the images public S3 url.
-* uploadToS3( uploadUrl, uploadData, progressCallback, callback ) - This method sends the image's raw data to S3 using the signed S3 upload url.
-* completeUpload( completeUrl, callback ) - This method will call your server to let it know that the upload is complete. This is so that you can keep image references in the database and know which images were uploaded successfully.
+* `getSignedUpload( signatureUrl, fileData, callback )` - This method will call your server to get a signed S3 upload url. The response will contain the upload url, the complete url, and what will be the images public S3 url.
+* `uploadToS3( uploadUrl, uploadData, progressCallback, callback )` - This method sends the image's raw data to S3 using the signed S3 upload url.
+* `completeUpload( completeUrl, callback )` - This method will call your server to let it know that the upload is complete. This is so that you can keep image references in the database and know which images were uploaded successfully.
 
 ### The image resizer
 
