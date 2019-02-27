@@ -1,7 +1,7 @@
 const { Storage } = require('@google-cloud/storage');
 const AbstractSigner = require('./AbstractSigner')
 
-class S3Signer extends AbstractSigner {
+class CloudStorageSigner extends AbstractSigner {
 
 	constructor( options = {} ){
 		super( options )
@@ -63,4 +63,4 @@ class S3Signer extends AbstractSigner {
 
 }
 
-module.exports = S3Signer
+module.exports = CloudStorageSigner
