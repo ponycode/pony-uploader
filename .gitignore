@@ -5,4 +5,5 @@ node_modules
 .env
 /.vscode
 /server/start.sh
-/server/pony-uploader-*.json
+/server/pony-uploader*.json
+/server/image-upload-*.json
