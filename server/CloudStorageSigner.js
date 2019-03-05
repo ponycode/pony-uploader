@@ -1,5 +1,6 @@
+var _ = require('lodash');
 const { Storage } = require('@google-cloud/storage');
-const AbstractSigner = require('./AbstractSigner')
+const AbstractSigner = require('./AbstractSigner');
 
 class CloudStorageSigner extends AbstractSigner {
 
@@ -32,15 +33,26 @@ class CloudStorageSigner extends AbstractSigner {
 			.file( uploadInfo.key )
 			.getSignedUrl( options )
 
+
+		// publicUrl references Firebase. Policy on Firebase has been set to
+		// service firebase.storage {
+		// 	match /b/{bucket}/o {
+		// 	  match /{allPaths=**} {
+		// 		allow read
+		// 		allow write: if request.auth != null;
+		// 	  }
+		// 	}
+		// }
+
 		return {
 			service: 'cloudStorage',
 			bucket: this.options.bucket,
-			key: uploadInfo.Key,
+			key: uploadInfo.key,
 			uploadUrl,
 			filetype: uploadInfo.filetype,
 			metadata: metadata,
-			publicUrl: `https://console.cloud.google.com/storage/browser/${this.options.bucket}/${uploadInfo.key}`
-		}
+			publicUrl: 'https://firebasestorage.googleapis.com/v0/b/' + this.options.bucket + '/o/' + uploadInfo.key + '?alt=media'
+		};
 	}
 
 	_sanitizeMetadata( metadata ){
@@ -54,11 +66,15 @@ class CloudStorageSigner extends AbstractSigner {
 
 	_updateMetadataForCloudStorage( metadata ){
 		if( !metadata ) return
-		const newMetadata = {}
-		for( let key in metadata ){
-			newMetadata[`x-goog-meta-${key.toLowerCase()}`] = String( metadata[key] )
+
+		// WORKAROUND: Sort metadata before signing with Google. Submitted bug info to Google.
+		const sortedMeta = _(metadata).toPairs().sortBy(0).fromPairs().value();
+		const newMetadata = {};
+		for( let key in sortedMeta ){
+			newMetadata[`x-goog-meta-${key.toLowerCase()}`] = String( sortedMeta[key] );
 		}
-		return newMetadata
+
+		return newMetadata;
 	}
 
 }
