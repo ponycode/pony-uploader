@@ -21,12 +21,16 @@ const cloudStorageSigner = new CloudStorageSigner({
 	bucket: process.env.CLOUD_STORAGE_BUCKET
 })
 
+function formatKey (folder, file) {
+	return folder ? `${folder}/${file}` : file;
+}
+
 app.use( bodyParser.json() )
 
 app.put( '/api/images/uploads/s3/signature', async ( req, res ) => {
 	try{
 		const upload = await s3Signer.signUpload({
-			key: 'test/' + req.body.filename,
+			key: formatKey(req.body.foldername, req.body.filename),
 			filesize: req.body.filesize,
 			filetype: req.body.filetype,
 			metadata: req.body.metadata
@@ -34,7 +38,6 @@ app.put( '/api/images/uploads/s3/signature', async ( req, res ) => {
 	
 		// TODO: Store metadata and final S3 location to DB
 		// Have a job perform cleanup on stranded images
-	
 		res.send( upload )
 	}catch( e ){
 		console.error( 'Error signing s3 upload: ', e )
@@ -45,15 +48,13 @@ app.put( '/api/images/uploads/s3/signature', async ( req, res ) => {
 app.put( '/api/images/uploads/cloudStorage/signature', async ( req, res ) => {
 	try{
 		const upload = await cloudStorageSigner.signUpload({
-			key: 'test/' + req.body.filename,
+			key: formatKey(req.body.foldername, req.body.filename),
 			filesize: req.body.filesize,
 			filetype: req.body.filetype,
 			metadata: req.body.metadata
 		})
 	
 		// Have a job perform cleanup on stranded images
-		console.log( upload );
-		
 		res.send( upload )
 	}catch( e ){
 		console.error( 'Error signing cloudStorage upload: ', e )

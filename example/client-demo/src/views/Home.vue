@@ -16,6 +16,7 @@
 </template>
 
 <script>
+// TODO: update signature URL as external config
 import VueImageUpload from '../../../../client/vue-image-upload'
 
 export default {

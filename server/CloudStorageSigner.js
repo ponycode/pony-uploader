@@ -51,7 +51,7 @@ class CloudStorageSigner extends AbstractSigner {
 			uploadUrl,
 			filetype: uploadInfo.filetype,
 			metadata: metadata,
-			publicUrl: 'https://firebasestorage.googleapis.com/v0/b/' + this.options.bucket + '/o/' + uploadInfo.key + '?alt=media'
+			publicUrl: `https://firebasestorage.googleapis.com/v0/b/${this.options.bucket}/o/${uploadInfo.key}?alt=media`
 		};
 	}
 

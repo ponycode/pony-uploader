@@ -153,7 +153,10 @@ export default {
 			this.state = 'uploading'
 			this.uploadPercent = 0
 
+			// foldername not working due to google url encode error. Need workaround.
+			// https://stackoverflow.com/questions/42202370/error-400-when-accessing-firebase-storage-trying-to-get-file-url
 			const fileInfo = {
+				// foldername: 'chemicals',
 				filename: image.file.name,
 				filesize: image.file.size,
 				filetype: image.file.type,
