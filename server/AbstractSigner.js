@@ -12,7 +12,7 @@ class AbstractSigner {
 		if( !upload.key ) return new Error( 'upload.key is required' )
 
 		if( !upload.filesize ) return new Error( 'upload.filesize is required' )
-		if( !this._isProperFileSize( upload.filesize ) ) return new Error( 'Filesize exceeds maximum filesize of ' + settings.maxFileSizeBytes + ': ' + upload.filesize )
+		if( !this._isProperFileSize( upload.filesize ) ) return new Error( 'Filesize exceeds maximum filesize of ' + options.maxFileSizeBytes + ': ' + upload.filesize )
 
 		if( !upload.filetype ) return new Error( 'upload.filetype is required' )
 		if( !this._isValidFileType( upload.filetype ) ) return new Error( 'Invalid file type: ' + upload.filetype )
