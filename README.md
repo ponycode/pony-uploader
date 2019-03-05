@@ -106,7 +106,7 @@ app.get( "/uploads/sign", function( req, res ){
             return;
         }
 
-        // This is a good place to save the image because the signature may be rejected it is the wrong filetype or too big
+        // This is a good place to save the image because the signature may be rejected if it is the wrong filetype or too big
         image.url = result.publicUrl;
         image.save( function( error, image ) {
             if (error) {
