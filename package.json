@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "test",
-	"rollup": "rollup client-test.js --file dist/client-test.js --format iife --name test",
-	"build": "vue-cli-service build --target lib --name myLib"
+    "rollup": "rollup client-test.js --file dist/client-test.js --format iife --name test",
+    "build": "vue-cli-service build --target lib --name myLib"
   },
   "repository": {
     "type": "git",
