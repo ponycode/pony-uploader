@@ -17,7 +17,7 @@ const s3Signer = new S3Signer({
 const CloudStorageSigner = require('./CloudStorageSigner')
 const cloudStorageSigner = new CloudStorageSigner({
 	projectId: process.env.CLOUD_STORAGE_PROJECT_ID,
-	credentials: require('./pony-uploader-232215-8bab2f1d42af.json'), //require( './pony-uploader-824979d2a049' ),
+	credentials: require('./image-upload-manager-3f540341271d.json'), // require('./pony-uploader.json'),
 	bucket: process.env.CLOUD_STORAGE_BUCKET
 })
 
@@ -26,7 +26,7 @@ app.use( bodyParser.json() )
 app.put( '/api/images/uploads/s3/signature', async ( req, res ) => {
 	try{
 		const upload = await s3Signer.signUpload({
-			key: 'test/' +  req.body.filename,
+			key: 'test/' + req.body.filename,
 			filesize: req.body.filesize,
 			filetype: req.body.filetype,
 			metadata: req.body.metadata
@@ -51,9 +51,9 @@ app.put( '/api/images/uploads/cloudStorage/signature', async ( req, res ) => {
 			metadata: req.body.metadata
 		})
 	
-		// TODO: Store metadata and final S3 location to DB
 		// Have a job perform cleanup on stranded images
-	
+		console.log( upload );
+		
 		res.send( upload )
 	}catch( e ){
 		console.error( 'Error signing cloudStorage upload: ', e )
