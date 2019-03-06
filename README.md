@@ -12,7 +12,10 @@ Next, go into the example folder and run `npm install`. To start the server run 
 $ git clone https://github.com/ponycode/pony-uploader
 $ cd pony-uploader
 $ npm install
-$ cd example
+$ cd example/client-demo
+$ npm install
+$ npm run serve
+$ cd.. && cd server
 $ npm install
 $ node server.js
 ```

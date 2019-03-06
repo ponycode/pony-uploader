@@ -152,18 +152,21 @@ export default {
 		async upload( image ){
 			this.state = 'uploading'
 			this.uploadPercent = 0
-
+			
 			function appendDateToFilename( filename ){
-    			var dotIndex = filename.lastIndexOf(".")
-    			if (dotIndex == -1) return filename + Date.now()
-    			else return filename.substring(0, dotIndex) + Date.now() + filename.substring(dotIndex)
+				var dotIndex = filename.lastIndexOf( '.' )
+				if ( dotIndex === -1 ) {
+					return filename + Date.now()
+				} else {
+					return filename.substring( 0, dotIndex ) + Date.now() + filename.substring( dotIndex )
+				}
 			}
 
 			// foldername not working due to google url encode error. Need workaround.
 			// https://stackoverflow.com/questions/42202370/error-400-when-accessing-firebase-storage-trying-to-get-file-url
 			const fileInfo = {
 				// foldername: 'chemicals',
-				filename: appendDateToFilename(image.file.name),
+				filename: appendDateToFilename( image.file.name ),
 				filesize: image.file.size,
 				filetype: image.file.type,
 				metadata: image.metadata
