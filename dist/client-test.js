@@ -26,12 +26,12 @@ var test = (function () {
 		static dataUriToArrayBuffer( dataURI ){
 			if( typeof dataURI !== 'string' ) throw new Error('Invalid argument: dataURI must be a string');
 		
-			var binary = atob( dataURI.split(',')[1] );
-			var len = binary.length;
-			var buffer = new ArrayBuffer(len);
-			var view = new Uint8Array(buffer);
+			const binary = atob( dataURI.split(',')[1] );
+			const len = binary.length;
+			const buffer = new ArrayBuffer(len);
+			const view = new Uint8Array(buffer);
 		
-			for( var i = 0; i < len; i++ ){
+			for( let i = 0; i < len; i++ ){
 				view[i] = binary.charCodeAt(i);
 			}
 		
@@ -41,9 +41,9 @@ var test = (function () {
 		static dataUriToBlob( dataURI, dataType ){
 			if( typeof dataURI !== 'string' ) throw new Error('Invalid argument: dataURI must be a string');
 
-			var binary = atob( dataURI.split(',')[1] );
-			var array = [];
-			for( var i = 0; i < binary.length; i++ ){
+			const binary = atob( dataURI.split(',')[1] );
+			const array = [];
+			for( let i = 0; i < binary.length; i++ ){
 				array.push( binary.charCodeAt(i) );
 			}
 
@@ -56,131 +56,142 @@ var test = (function () {
 			return image;
 		}
 
+		static imageToBlob( image, imageType ){
+			return this.dataUriToBlob( image.src, imageType )
+		}
+
 	 }
 
 	const tiffTags = {
-		0x0112 : "Orientation",
-		0x0132 : "DateTime",
-		0x010F : "Make",
-		0x0110 : "Model"
+		0x0112: 'orientation',
+		0x0132: 'dateTaken',
+		0x010F: 'cameraMake',
+		0x0110: 'cameraModel'
 	};
 
-	class ImageExifReader {
+	const JPEG_START_OF_IMAGE_MARKER = 0xFFD8;
+	const EXIF_MARKER = 0xFFE1;
 
+	class ImageExifReader {
 		constructor( image ){
 			this.image = image;
 			this.dataView = ImageUtils.dataViewFromImage( image );
+			this.isLittleEndian = true;
 		}
 
-		hasExif(){
-			// Checks for jpeg image marker
-			return this.dataView.getUint8(0) === 0xFF && this.dataView.getUint8(1) === 0xD8;
+		isJpeg(){
+			return this.dataView.getUint16( 0 ) === JPEG_START_OF_IMAGE_MARKER
 		}
 
 		read(){
-			if( !this.hasExif() ) return null;
-			
+			if( !this.isJpeg() ) return null
+
+			const startOfExifData = this._findStartOfExifData();
+			if( !startOfExifData ) return null
+			return this._readEXIFData( startOfExifData )
+		}
+
+		_findStartOfExifData(){
 			let offset = 2;
 
 			while( offset < this.dataView.byteLength ){
-				if( this.dataView.getUint8( offset ) !== 0xFF ){
-					// not valid jpeg
-					return null;
-				}
-
-				if( this.dataView.getUint8( offset + 1 ) === 225 ){
-					const exif = this._readEXIFData( offset + 4, this.dataView.getUint16( offset + 2 ) - 2 );
-					return exif;
-				} else {
+				if( this.dataView.getUint16( offset ) !== EXIF_MARKER ){
+					// Move to next marker - 2 bytes for marker, unint16 for size of marker data
 					offset += 2 + this.dataView.getUint16( offset + 2 );
 				}
+				return offset + 4
 			}
 
-			return null;
+			return null
+		}
+
+		// This must be called before doing any reads from the dataView
+		_chooseEndianessFromTiffHeader( tiffHeaderOffset ){
+			if( this.dataView.getUint16( tiffHeaderOffset ) === 0x4949 ){ // Intel Format
+				this.isLittleEndian = true;
+			}else if( this.dataView.getUint16( tiffHeaderOffset ) === 0x4D4D ){ // Motorola Format
+				this.isLittleEndian = false;
+			}else{
+				this.isLittleEndian = void 0; // let browser choose
+			}
+		}
+
+		_isValidExifStructure( start ){
+			if( this._getStringFromBuffer( this.dataView, start, 4 ) !== 'Exif' ) return false
+			if( this.dataView.getUint16( start + 8, this.isLittleEndian ) !== 0x002A ) return false // 42 = tiff file marker
+			return true
 		}
 
 		_readEXIFData( start ){
-			if( this._getStringFromBuffer( this.dataView, start, 4) !== 'Exif' ) return null;
+			const tiffHeaderOffset = start + 6;
 
-			let bigEnd;
-			const tiffOffset = start + 6;
+			this._chooseEndianessFromTiffHeader( tiffHeaderOffset );
 
-			if( this.dataView.getUint16(tiffOffset) == 0x4949 ){
-				bigEnd = false;
-			}else if( this.dataView.getUint16(tiffOffset) == 0x4D4D ){
-				bigEnd = true;
-			}else{
-				return null;
-			}
+			if( !this._isValidExifStructure( start ) ) return null
 
-			if( this.dataView.getUint16( tiffOffset + 2, !bigEnd ) != 0x002A ) return null;
+			const firstIFDOffset = this.dataView.getUint32( tiffHeaderOffset + 4, this.isLittleEndian );
+			if( firstIFDOffset < 0x00000008 ) return null
 
-			const firstIFDOffset = this.dataView.getUint32( tiffOffset + 4, !bigEnd );
-			if( firstIFDOffset < 0x00000008 ) return null;
-
-			return this._readTags( tiffOffset, tiffOffset + firstIFDOffset, bigEnd );
+			return this._readTags( tiffHeaderOffset, tiffHeaderOffset + firstIFDOffset )
 		}
 
-		_readTags( tiffStart, dirStart, bigEnd ){
-			const entries = this.dataView.getUint16(dirStart, !bigEnd);
+		_readTags( tiffStart, dirStart ){
+			const numberOfEntries = this.dataView.getUint16( dirStart, this.isLittleEndian );
 			const tags = {};
-			let entryOffset = 0;
-			let tag = null;
 
-			for( var i = 0; i < entries; i++ ){
-				entryOffset = dirStart + i * 12 + 2;
-				tag = tiffTags[ this.dataView.getUint16( entryOffset, !bigEnd ) ];
-				if( !tag ) continue;
-				tags[tag] = this._readTagValue( entryOffset, tiffStart, bigEnd );
+			for( let i = 0; i < numberOfEntries; i++ ){
+				const entryOffset = dirStart + i * 12 + 2; // each entry is 12 bytes
+				const tag = tiffTags[ this.dataView.getUint16( entryOffset, this.isLittleEndian ) ];
+				if( !tag ) continue
+				tags[tag] = this._readTagValue( entryOffset, tiffStart );
 			}
 
-			return tags;
+			return tags
 		}
 
-		_readTagValue( entryOffset, tiffStart, bigEnd ){
-
-			const type = this.dataView.getUint16( entryOffset + 2, !bigEnd );
-			const numValues = this.dataView.getUint32( entryOffset + 4, !bigEnd) ;
-			const valueOffset = this.dataView.getUint32( entryOffset + 8, !bigEnd ) + tiffStart;
-			let offset;
+		_readTagValue( entryOffset, tiffStart ){
+			const type = this.dataView.getUint16( entryOffset + 2, this.isLittleEndian );
+			const numValues = this.dataView.getUint32( entryOffset + 4, this.isLittleEndian );
+			const inlineValueOffset = entryOffset + 8;
+			const externalValueOffset = tiffStart + this.dataView.getUint32( inlineValueOffset, this.isLittleEndian );
 
 			switch( type ){
-				case 2: // ascii, 8-bit byte
-					offset = numValues > 4 ? valueOffset : (entryOffset + 8);
-					return this._getStringFromBuffer( this.dataView, offset, numValues - 1 );
+			case 2: // ascii, 8-bit byte
+				const valueOffset = numValues > 4 ? externalValueOffset : inlineValueOffset;
+				return this._getStringFromBuffer( this.dataView, valueOffset, numValues - 1 )
 
-				case 3: // short, 16 bit int
-					if( numValues == 1 ){
-						return this.dataView.getUint16(entryOffset + 8, !bigEnd);
-					} else {
-						offset = numValues > 2 ? valueOffset : (entryOffset + 8);
-						var vals = [];
-						for( var n = 0; n < numValues; n++ ){
-							vals[n] = this.dataView.getUint16( offset + 2 * n, !bigEnd );
-						}
-						return vals;
+			case 3: // short, 16 bit int
+				if( numValues === 1 ){
+					return this.dataView.getUint16( inlineValueOffset )
+				} else {
+					const valuesOffset = numValues > 2 ? externalValueOffset : inlineValueOffset;
+					const vals = [];
+					for( let n = 0; n < numValues; n++ ){
+						const valuesItemOffset = n * 2;
+						vals[n] = this.dataView.getUint16( valuesOffset + valuesItemOffset );
 					}
-				default:
-					break;
+					return vals
+				}
+			default:
+				break
 			}
 		}
 
 		_getStringFromBuffer( buffer, start, length ){
 			let outstr = '';
 			for( let n = start; n < start + length; n++ ){
-				outstr += String.fromCharCode( buffer.getUint8( n ) );
+				outstr += String.fromCharCode( buffer.getUint8( n, this.isLittleEndian ) );
 			}
-			return outstr;
+			return outstr
 		}
-		
 	}
 
 	class LocalImageLoader {
-
 		constructor( file ){
 			this.file = file;
 			this.reader = null;
 			this.image = null;
+			this.exif = null;
 		}
 
 		async load(){
@@ -190,101 +201,139 @@ var test = (function () {
 				file: this.file
 			};
 
-			if( !ImageUtils.browserCanLoadImages() ) return result;
+			if( !ImageUtils.browserCanLoadImages() ) return result
 
 			const imageData = await this._loadLocalFile( this.file );
-			if( !imageData ) return result;
+			if( !imageData ) return result
 
-			const image = await this._createImageFromLocalFile( imageData, this.file );
-			if( !image ) return result;
+			this.image = await this._createImageFromLocalFile( imageData, this.file );
+			if( !this.image ) return result
 
-			result.image = image;
-			result.width = image.width;
-			result.height = image.height;
+			result.image = this.image;
+			result.width = this.image.width;
+			result.height = this.image.height;
 
-			if( ImageUtils.fileIsJpeg( this.file ) ){
-				result.exif = new ImageExifReader( image ).read();
+			try{
+				result.exif = this.exif = new ImageExifReader( this.image ).read();
+			}catch( e ){
+				console.error( `Error reading exif: ${e}` );
 			}
 
-			return result;
+			result.metadata = this._buildMetadata();
+
+			return result
+		}
+
+		_buildMetadata( exif ){
+			// NOTE: all keys must be lowercase for s3 to work - performed later
+			// hyphenated keys work best for consistency
+
+			const metadata = {};
+			metadata.filename = this.file.name;
+			metadata.width = this.image.width;
+			metadata.height = this.image.height;
+
+			if( this.exif ){
+				metadata['exif-date-taken'] = this.exif.dateTaken;
+				metadata['exif-camera-make'] = this.exif.cameraMake;
+				metadata['exif-camera-model'] = this.exif.cameraModel;
+			}
+
+			return metadata
 		}
 
 		_loadLocalFile( file ){
-			if( !file.type.match('image.*') ){
-				throw new Error(`The input file is not a supported image: ${file.type}`);
+			if( !file.type.match( 'image.*' ) ){
+				throw new Error( `The input file is not a supported image: ${file.type}` )
 			}
 
 			return new Promise( function( resolve, reject ){
 				const reader = new FileReader();
-		
+
 				reader.onload = function(){
 					resolve( this.result );
 				};
-		
+
 				reader.onabort = function(){
-					reject( new Error(`The file read was aborted: ${file.name}`) );
+					reject( new Error( `The file read was aborted: ${file.name}` ) );
 				};
-		
+
 				reader.onerror = function( error ){
-					reject( error || new Error(`An error occured while reading the file: ${file.name}`) );
+					reject( error || new Error( `An error occured while reading the file: ${file.name}` ) );
 				};
-		
+
 				reader.readAsDataURL( file );
-			});
+			} )
 		}
 
 		_createImageFromLocalFile( imageSrc, file ){
 			return new Promise( function( resolve, reject ){
 				const image = new Image();
-		
+
 				image.onload = function(){
 					resolve( image );
 				};
-		
-				image.onabort = function(){
-					reject( new Error(`Image load was aborted: ${file.name}`) );
-				};
-		
-				image.onerror = function( error ){
-					reject( error || new Error(`An error occured while loading image: ${file.name}`) );
-				};
-		
-				image.src = imageSrc;
-			});
-		}
 
+				image.onabort = function(){
+					reject( new Error( `Image load was aborted: ${file.name}` ) );
+				};
+
+				image.onerror = function( error ){
+					reject( error || new Error( `An error occured while loading image: ${file.name}` ) );
+				};
+
+				image.src = imageSrc;
+			} )
+		}
 	}
 
 	class ImageResize {
-
 		static async resizeLoadedImage( loadedImage, options ){
-			if( !ImageUtils.browserCanLoadImages() ) return null;
+			if( !ImageUtils.browserCanLoadImages() ) return null
 
 			const image = this.scaleAndRotateImage( loadedImage, options );
 
-			return image;
+			return image
 		}
 
 		static scaleAndRotateImage( loadedImage, options = {} ){
 			const orientation = ( loadedImage.exif ) ? loadedImage.exif.Orientation : 1;
 			const scaledDimensions = this.determineScaledDimensions( loadedImage, options );
 
-			const canvas = this.buildOrientedCanvas( scaledDimensions.width, scaledDimensions.height, orientation );
-			const context = canvas.getContext('2d');
-			context.drawImage( loadedImage.image, 0, 0, scaledDimensions.width, scaledDimensions.height );
+			const canvasWidth = options.width || scaledDimensions.width;
+			const canvasHeight = options.height || scaledDimensions.height;
+			const canvasBackgroundFillStyle = options.backgroundFillStyle || '#FFF';
+
+			const canvas = this.buildOrientedCanvas( canvasWidth, canvasHeight, orientation );
+			const context = canvas.getContext( '2d' );
+
+			const destinationX = Math.floor( ( canvasWidth - scaledDimensions.width ) / 2.0 );
+			const destinationY = Math.floor( ( canvasHeight - scaledDimensions.height ) / 2.0 );
+
+			context.fillStyle = canvasBackgroundFillStyle;
+			context.fillRect( 0, 0, canvasWidth, canvasHeight );
+
+			context.drawImage( loadedImage.image, 0, 0, loadedImage.image.width, loadedImage.image.height, destinationX, destinationY, scaledDimensions.width, scaledDimensions.height );
 
 			const dataUrl = canvas.toDataURL( 'image/jpeg', options.jpgQuality || 0.8 );
 			document.body.removeChild( canvas );
 
 			const resizedImage = ImageUtils.dataUrlToImage( dataUrl );
 
+			const metadata = { ...loadedImage.metadata };
+			metadata['original-width'] = loadedImage.width;
+			metadata['original-height'] = loadedImage.height;
+			metadata['width'] = scaledDimensions.width;
+			metadata['height'] = scaledDimensions.height;
+
 			return {
 				image: resizedImage,
 				width: resizedImage.width,
 				height: resizedImage.height,
 				file: loadedImage.file,
-				Exif: loadedImage.exif
-			};
+				exif: loadedImage.exif,
+				metadata
+			}
 		}
 
 		static determineScaledDimensions( image, options ){
@@ -315,13 +364,13 @@ var test = (function () {
 			return {
 				width: Math.floor( newWidth ),
 				height: Math.floor( newHeight )
-			};
+			}
 		}
 
 		static buildOrientedCanvas( width, height, orientation = 1 ){
 			if( orientation > 8 ) orientation = 1;
 
-			const canvas = document.createElement('canvas');
+			const canvas = document.createElement( 'canvas' );
 			canvas.id = 'hiddenCanvas';
 			canvas.width = width;
 			canvas.height = height;
@@ -332,49 +381,50 @@ var test = (function () {
 				canvas.height = width;
 			}
 
-			const context = canvas.getContext('2d');
+			const context = canvas.getContext( '2d' );
 			switch( orientation ){
-				case 2:
-					// horizontal flip
-					context.translate(width, 0);
-					context.scale(-1, 1);
-					break;
-				case 3:
-					// 180° rotate left
-					context.translate(width, height);
-					context.rotate(Math.PI);
-					break;
-				case 4:
-					// vertical flip
-					context.translate(0, height);
-					context.scale(1, -1);
-					break;
-				case 5:
-					// vertical flip + 90 rotate right
-					context.rotate(0.5 * Math.PI);
-					context.scale(1, -1);
-					break;
-				case 6:
-					// 90° rotate right
-					context.rotate(0.5 * Math.PI);
-					context.translate(0, -height);
-					break;
-				case 7:
-					// horizontal flip + 90 rotate right
-					context.rotate(0.5 * Math.PI);
-					context.translate(width, -height);
-					context.scale(-1, 1);
-					break;
-				case 8:
-					// 90° rotate left
-					context.rotate(-0.5 * Math.PI);
-					context.translate(-width, 0);
-					break;
+			case 2:
+				// horizontal flip
+				context.translate( width, 0 );
+				context.scale( -1, 1 );
+				break
+			case 3:
+				// 180° rotate left
+				context.translate( width, height );
+				context.rotate( Math.PI );
+				break
+			case 4:
+				// vertical flip
+				context.translate( 0, height );
+				context.scale( 1, -1 );
+				break
+			case 5:
+				// vertical flip + 90 rotate right
+				context.rotate( 0.5 * Math.PI );
+				context.scale( 1, -1 );
+				break
+			case 6:
+				// 90° rotate right
+				context.rotate( 0.5 * Math.PI );
+				context.translate( 0, -height );
+				break
+			case 7:
+				// horizontal flip + 90 rotate right
+				context.rotate( 0.5 * Math.PI );
+				context.translate( width, -height );
+				context.scale( -1, 1 );
+				break
+			case 8:
+				// 90° rotate left
+				context.rotate( -0.5 * Math.PI );
+				context.translate( -width, 0 );
+				break
+			default:
+				break
 			}
 			document.body.appendChild( canvas );
-			return canvas;
+			return canvas
 		}
-
 	}
 
 	async function test( file ){
