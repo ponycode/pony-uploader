@@ -4,6 +4,4 @@ node_modules
 .grunt
 .env
 /.vscode
-/server/start.sh
-/server/pony-uploader*.json
-/server/image-upload-*.json
+creds.json
