@@ -4,7 +4,7 @@
 		<vue-image-upload
 			v-model="image"
 			ref="uploader"
-			signature-url="https://images.phin.co/signedurl"
+			signature-url="https://images.phin.co/signature"
 			y-signature-url="/api/images/uploads/cloudStorage/signature"
 			x-signature-url="/api/images/uploads/s3/signature"
 			placeholder-image-url=""
