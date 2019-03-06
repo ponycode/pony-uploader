@@ -7,9 +7,9 @@ module.exports = {
 		'space-before-blocks': 'off',
 		'space-before-function-paren': 'off',
 		'keyword-spacing': 'off'
-  },
-  globals: {
-    'XDomainRequest': false,
-    'xhr': false
-  }
+	},
+	globals: {
+		'XDomainRequest': false,
+		'xhr': false
+	}
 }
