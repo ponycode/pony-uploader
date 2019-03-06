@@ -4,9 +4,10 @@
 		<vue-image-upload
 			v-model="image"
 			ref="uploader"
+			z-signature-url="http://localhost:5000/signature"
 			signature-url="https://images.phin.co/signature"
-			y-signature-url="/api/images/uploads/cloudStorage/signature"
-			x-signature-url="/api/images/uploads/s3/signature"
+			x-signature-url="/api/images/uploads/cloudStorage/signature"
+			y-signature-url="/api/images/uploads/s3/signature"
 			placeholder-image-url=""
 			:width="200"
 			:height="200"
@@ -28,9 +29,6 @@ export default {
 	data () {
 		return {
 			image: null
-			// image: {
-			// 	publicUrl: 'https://pony-upload-test.s3.amazonaws.com/test/IMG_3410.jpg'
-			// }
 		}
 	}
 }

@@ -17,7 +17,7 @@ const s3Signer = new S3Signer({
 const CloudStorageSigner = require('./CloudStorageSigner')
 const cloudStorageSigner = new CloudStorageSigner({
 	projectId: process.env.CLOUD_STORAGE_PROJECT_ID,
-	credentials: require('./image-upload-manager-3f540341271d.json'), // require('./pony-uploader.json'),
+	credentials: require('./creds'),
 	bucket: process.env.CLOUD_STORAGE_BUCKET
 })
 
