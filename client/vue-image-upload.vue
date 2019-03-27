@@ -47,6 +47,7 @@
 import LocalImageLoader from './LocalImageLoader.js'
 import ImageResize from './ImageResize.js'
 import ImageUtils from './ImageUtils.js'
+import ImageStatus from './ImageStatus.js'
 import UploadSigner from './UploadSigner.js'
 import S3Uploader from './S3Uploader.js'
 import CloudStorageUploader from './CloudStorageUploader.js'
@@ -65,6 +66,20 @@ export default {
 		signatureUrl: {
 			type: String,
 			required: true
+		},
+		trackImageStatus: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		imageStatusCollection: {
+			type: String,
+			required: false,
+			default: 'images'
+		},
+		imageStatusUrl: {
+			type: String,
+			required: false
 		},
 		width: {
 			type: Number,
@@ -152,7 +167,7 @@ export default {
 		async upload( image ){
 			this.state = 'uploading'
 			this.uploadPercent = 0
-			
+
 			function appendDateToFilename( filename ){
 				var dotIndex = filename.lastIndexOf( '.' )
 				if ( dotIndex === -1 ) {
@@ -182,6 +197,19 @@ export default {
 				const result = await uploader.upload( signedUploadResult, blob, percent => {
 					this.uploadPercent = percent
 				} )
+
+				if( result && this.trackImageStatus ) {
+					let statusData = result
+					statusData.fileInfo = fileInfo
+
+					const imageStatus = new ImageStatus( this.imageStatusUrl, this.imageStatusCollection )
+					const imageStatusResult = await imageStatus.add( statusData )
+
+					if( imageStatusResult.status_code !== 200 ) {
+						// TODO: console.error() not logging error
+						console.log( 'Error adding image status: ', imageStatusResult.status_text )
+					}
+				}
 
 				console.log( 'Image uploaded: ', result )
 				this.$emit( 'input', result )

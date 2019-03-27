@@ -20,6 +20,8 @@ class CloudStorageUploader {
 		const result = await Request.performRequest( request )
 		if( result.status !== 200 ) throw new Error( `Error uploading image: ${result.status}, ${result.text}` )
 
+		// TODO: check whether to persist image metadata
+
 		return {
 			bucket: signedUploadInfo.bucket,
 			key: signedUploadInfo.key,
