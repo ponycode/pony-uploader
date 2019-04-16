@@ -22,18 +22,17 @@ class ImageIndex {
 			throw new Error( `Error adding image status: ${result.text}` )
 		}
 	}
-	async persist( fileInfo, key ){
-		console.info( `fileInfo => ${JSON.stringify( fileInfo )}` )
+	async persist( ref ){
+		console.info( `image ref => ${ref}` )
 		const result = await Request.performJsonRequest( {
 			method: 'PUT',
-			url: `${this.imageIndexApiUrl}/${key}`,
-			json: fileInfo
+			url: `${this.imageIndexApiUrl}/${ref}`
 		} )
 
 		if( result.json ){
 			return result.json
 		}else{
-			throw new Error( `Error adding image status: ${result.text}` )
+			throw new Error( `Error persisting image: ${result.text}` )
 		}
 	}
 }
