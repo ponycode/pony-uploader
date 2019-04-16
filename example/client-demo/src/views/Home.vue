@@ -9,24 +9,28 @@
       gcp-remote-base-url="https://images-staging.phin.co"
 			signature-url="/signature"
       index-url="/index"
-      :track-image-status="false"
-		>
+      :track-image-status="false">
 		</vue-image-upload>
+		<div>
+			<button v-on:click="persistImage">Persist Image</button>
+		</div>
 	</div>
 </template>
 
 <script>
 import VueImageUpload from '../../../../src/components/pony-uploader'
-
 export default {
 	name: 'home',
 	components: {
 		VueImageUpload
 	},
-	data () {
-		return {
-			image: null
-		}
+	data: {
+		image: null
+	},
+	methods: {
+		persistImage: function () {
+      console.info('persist image called')
+    }
 	}
 }
 

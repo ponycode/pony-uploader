@@ -2,7 +2,7 @@
 import LocalImageLoader from "../js/LocalImageLoader.js";
 import ImageResize from "../js/ImageResize.js";
 import ImageUtils from "../js/ImageUtils.js";
-import ImageStatus from "../js/ImageStatus.js";
+import TrackImage from "../js/TrackImage.js";
 import UploadSigner from "../js/UploadSigner.js";
 import S3Uploader from "../js/S3Uploader.js";
 import CloudStorageUploader from "../js/CloudStorageUploader.js";
@@ -34,7 +34,7 @@ export default {
       required: false,
       default: false
     },
-    imageStatusCollection: {
+    imageCollection: {
       type: String,
       required: false,
       default: "images"
@@ -190,13 +190,10 @@ export default {
           statusData.fileInfo = fileInfo;
 
           const indexUrl = this.baseUrl + this.imageIndexUrl;
-          const imageStatus = new ImageStatus(
-            indexUrl,
-            this.imageStatusCollection
-          );
-          const imageStatusResult = await imageStatus.add(statusData);
+          const imageStatus = new ImageStatus( indexUrl, this.imageCollection );
+          const imageStatusResult = await imageStatus.add( statusData );
 
-          if (imageStatusResult.status_code !== 200) {
+          if ( imageStatusResult.status_code !== 200 ) {
             console.info( "Error adding image status: ", imageStatusResult.status_text );
           }
         }
