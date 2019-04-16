@@ -19,17 +19,21 @@
 
 <script>
 import VueImageUpload from '../../../../src/components/pony-uploader'
+
 export default {
 	name: 'home',
 	components: {
-		VueImageUpload
+		'vue-image-upload': VueImageUpload
 	},
-	data: {
-		image: null
+	data () {
+		return {
+			image: null
+		}
 	},
 	methods: {
 		persistImage: function () {
-      console.info('persist image called')
+			console.info('persist image called')
+			this.$refs.uploader.persist(this.image);
     }
 	}
 }
