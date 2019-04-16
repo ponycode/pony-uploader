@@ -9,11 +9,8 @@
       gcp-remote-base-url="https://images-staging.phin.co"
 			signature-url="/signature"
       index-url="/index"
-      :track-image-status=true
-			:width="200"
-			:height="200"
-			:imageWidth="400"
-			:imageHeight="400">
+      :track-image-status="false"
+		>
 		</vue-image-upload>
 	</div>
 </template>
