@@ -27,6 +27,16 @@ function formatKey ( folder, file ) {
 
 app.use( bodyParser.json() )
 
+app.post( '/api/images/uploads/index', ( req, res ) => {
+	// this route should be used for adding metadata about the image to your index
+	res.send( 'need to implement your own index for tracking stale images' )
+} )
+
+app.put( '/api/images/uploads/index', ( req, res ) => {
+	// this route should be used for telling your index to persist the image
+	res.send( 'need to implement your own index for tracking stale images' )
+} )
+
 app.put( '/api/images/uploads/s3/signature', async ( req, res ) => {
 	try{
 		const upload = await s3Signer.signUpload( {
