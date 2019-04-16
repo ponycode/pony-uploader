@@ -32,7 +32,7 @@ class CloudStorageSigner extends AbstractSigner {
 			.file( uploadInfo.key )
 			.getSignedUrl( options )
 
-		// publicUrl references Firebase. Policy on Firebase has been set to
+		// publicUrl references Firebase. Minimum policy should be:
 		// service firebase.storage {
 		// 	match /b/{bucket}/o {
 		// 	  match /{allPaths=**} {
