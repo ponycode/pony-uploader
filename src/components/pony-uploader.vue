@@ -137,8 +137,8 @@ export default {
         ) !== -1
       );
     },
-    persist(fileInfo, key) {
-      console.info(`Persist image => ${key}`);
+    persist(image) {
+      console.info(`persist image => ${image.key}`)
     },
     async upload(image) {
       this.state = "uploading";
