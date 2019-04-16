@@ -5,11 +5,10 @@
 			v-model="image"
 			ref="uploader"
       placeholder-image-url=""
-      gcp-signature-url="/api/images/uploads/cloudStorage/signature"
-			aws-signature-url="/api/images/uploads/s3/signature"
-      base-url="https://image-upload-manager-staging.firebaseapp.com"
+			base-url="http://localhost:5000"
+      gcp-remote-base-url="https://images-staging.phin.co"
 			signature-url="/signature"
-      image-index-url="/index"
+      index-url="/index"
       :track-image-status=true
 			:width="200"
 			:height="200"
@@ -20,7 +19,6 @@
 </template>
 
 <script>
-// TODO: update signature URL as external config
 import VueImageUpload from '../../../../src/components/pony-uploader'
 
 export default {

@@ -2,6 +2,7 @@
 const express = require( 'express' )
 const app = express()
 const bodyParser = require( 'body-parser' )
+var cors = require( 'cors' )
 const PORT = process.env.PORT || 3000
 
 const dotenv = require( 'dotenv' )
@@ -25,19 +26,20 @@ function formatKey ( folder, file ) {
 	return folder ? `${folder}/${file}` : file
 }
 
+app.use( cors() )
 app.use( bodyParser.json() )
 
-app.post( '/api/images/uploads/index', ( req, res ) => {
+app.post( '/index', ( req, res ) => {
 	// this route should be used for adding metadata about the image to your index
 	res.send( 'need to implement your own index for tracking stale images' )
 } )
 
-app.put( '/api/images/uploads/index', ( req, res ) => {
+app.put( '/index', ( req, res ) => {
 	// this route should be used for telling your index to persist the image
 	res.send( 'need to implement your own index for tracking stale images' )
 } )
 
-app.put( '/api/images/uploads/s3/signature', async ( req, res ) => {
+app.put( '/s3/signature', async ( req, res ) => {
 	try{
 		const upload = await s3Signer.signUpload( {
 			key: formatKey( req.body.foldername, req.body.filename ),
@@ -46,8 +48,6 @@ app.put( '/api/images/uploads/s3/signature', async ( req, res ) => {
 			metadata: req.body.metadata
 		} )
 
-		// TODO: Store metadata and final S3 location to DB
-		// Have a job perform cleanup on stranded images
 		res.send( upload )
 	}catch( e ){
 		console.error( 'Error signing s3 upload: ', e )
@@ -55,7 +55,7 @@ app.put( '/api/images/uploads/s3/signature', async ( req, res ) => {
 	}
 } )
 
-app.put( '/api/images/uploads/cloudStorage/signature', async ( req, res ) => {
+app.put( '/cloudStorage/signature', async ( req, res ) => {
 	try{
 		const upload = await cloudStorageSigner.signUpload( {
 			key: formatKey( req.body.foldername, req.body.filename ),
@@ -64,7 +64,6 @@ app.put( '/api/images/uploads/cloudStorage/signature', async ( req, res ) => {
 			metadata: req.body.metadata
 		} )
 
-		// Have a job perform cleanup on stranded images
 		res.send( upload )
 	}catch( e ){
 		console.error( 'Error signing cloudStorage upload: ', e )

@@ -23,7 +23,7 @@ export default {
     },
     baseUrl: {
       type: String,
-      required: true
+			required: true
     },
     signatureUrl: {
       type: String,
@@ -197,11 +197,7 @@ export default {
           const imageStatusResult = await imageStatus.add(statusData);
 
           if (imageStatusResult.status_code !== 200) {
-            // TODO: console.error() not logging error
-            console.log(
-              "Error adding image status: ",
-              imageStatusResult.status_text
-            );
+            console.info( "Error adding image status: ", imageStatusResult.status_text );
           }
         }
 
@@ -210,6 +206,7 @@ export default {
 
         this.image = null;
       } catch (e) {
+				this._clearImage();
         console.error("Error uploading image", e); // TODO: handle error
       }
     },
