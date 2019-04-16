@@ -1,8 +1,7 @@
-const aws = require('aws-sdk')
-const AbstractSigner = require('./AbstractSigner')
+const aws = require( 'aws-sdk' )
+const AbstractSigner = require( './AbstractSigner' )
 
 class S3Signer extends AbstractSigner{
-
 	constructor( options = {} ){
 		super( options )
 
@@ -10,13 +9,13 @@ class S3Signer extends AbstractSigner{
 		if( !this.options.s3AccessKeySecret ) throw new Error( 'options.s3AccessKeySecret is required' )
 		if( !this.options.bucket ) throw new Error( 'options.bucket is required' )
 
-		this.s3 = new aws.S3({
+		this.s3 = new aws.S3( {
 			apiVersion: 'latest',
 			signatureVersion: 'v4',
 			region: 'us-east-1',
-			accessKeyId: this.options.s3AccessKeyId, 
+			accessKeyId: this.options.s3AccessKeyId,
 			secretAccessKey: this.options.s3AccessKeySecret
-		});
+		} )
 	}
 
 	async signUpload( uploadInfo ){
@@ -50,8 +49,8 @@ class S3Signer extends AbstractSigner{
 			this.s3.getSignedUrl( 'putObject', s3Params, ( error, uploadUrl ) => {
 				if( error ) return reject( error )
 				resolve( uploadUrl )
-			})
-		})
+			} )
+		} )
 	}
 
 	_sanitizeMetadata( metadata ){
@@ -71,7 +70,6 @@ class S3Signer extends AbstractSigner{
 		}
 		return newMetadata
 	}
-
 }
 
 module.exports = S3Signer

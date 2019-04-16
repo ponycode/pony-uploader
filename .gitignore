@@ -1,7 +1,6 @@
 node_modules
 .DS_Store
 .idea
-.grunt
 .env
 /.vscode
 creds.json

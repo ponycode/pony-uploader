@@ -1,18 +1,18 @@
 import Request from './Request'
 
-class ImageStatus {
-	constructor( imageStatusApiUrl, imageStatusCollection ){
-		this.imageStatusApiUrl = imageStatusApiUrl
-		this.imageStatusCollection = imageStatusCollection
+class ImageIndex {
+	constructor( imageIndexApiUrl, imageCollection ){
+		this.imageIndexApiUrl = imageIndexApiUrl
+		this.imageCollection = imageCollection
 	}
 
 	async add( fileInfo ){
 		const obj = fileInfo
-		obj.collection = this.imageStatusCollection
+		obj.collection = this.imageCollection
 
 		const result = await Request.performJsonRequest( {
 			method: 'POST',
-			url: this.imageStatusApiUrl,
+			url: this.imageIndexApiUrl,
 			json: obj
 		} )
 
@@ -22,10 +22,11 @@ class ImageStatus {
 			throw new Error( `Error adding image status: ${result.text}` )
 		}
 	}
-	async update( fileInfo, key ){
+	async persist( fileInfo, key ){
+		console.info( `fileInfo => ${JSON.stringify( fileInfo )}` )
 		const result = await Request.performJsonRequest( {
 			method: 'PUT',
-			url: `${this.imageStatusApiUrl}/${key}`,
+			url: `${this.imageIndexApiUrl}/${key}`,
 			json: fileInfo
 		} )
 
@@ -37,4 +38,4 @@ class ImageStatus {
 	}
 }
 
-export default ImageStatus
+export default ImageIndex

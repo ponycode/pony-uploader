@@ -1,9 +1,8 @@
-var _ = require('lodash');
-const { Storage } = require('@google-cloud/storage');
-const AbstractSigner = require('./AbstractSigner');
+var _ = require( 'lodash' )
+const { Storage } = require( '@google-cloud/storage' )
+const AbstractSigner = require( './AbstractSigner' )
 
 class CloudStorageSigner extends AbstractSigner {
-
 	constructor( options = {} ){
 		super( options )
 
@@ -11,10 +10,10 @@ class CloudStorageSigner extends AbstractSigner {
 		if( !this.options.credentials ) throw new Error( 'options.credentials is required' )
 		if( !this.options.bucket ) throw new Error( 'options.bucket is required' )
 
-		this.storage = new Storage({
+		this.storage = new Storage( {
 			projectId: this.options.projectId,
 			credentials: this.options.credentials
-		})
+		} )
 	}
 
 	async signUpload( uploadInfo ){
@@ -32,7 +31,6 @@ class CloudStorageSigner extends AbstractSigner {
 			.bucket( this.options.bucket )
 			.file( uploadInfo.key )
 			.getSignedUrl( options )
-
 
 		// publicUrl references Firebase. Policy on Firebase has been set to
 		// service firebase.storage {
@@ -52,7 +50,7 @@ class CloudStorageSigner extends AbstractSigner {
 			filetype: uploadInfo.filetype,
 			metadata: metadata,
 			publicUrl: `https://firebasestorage.googleapis.com/v0/b/${this.options.bucket}/o/${uploadInfo.key}?alt=media`
-		};
+		}
 	}
 
 	_sanitizeMetadata( metadata ){
@@ -68,15 +66,14 @@ class CloudStorageSigner extends AbstractSigner {
 		if( !metadata ) return
 
 		// WORKAROUND: Sort metadata before signing with Google. Submitted bug info to Google.
-		const sortedMeta = _(metadata).toPairs().sortBy(0).fromPairs().value();
-		const newMetadata = {};
+		const sortedMeta = _( metadata ).toPairs().sortBy( 0 ).fromPairs().value()
+		const newMetadata = {}
 		for( let key in sortedMeta ){
-			newMetadata[`x-goog-meta-${key.toLowerCase()}`] = String( sortedMeta[key] );
+			newMetadata[`x-goog-meta-${key.toLowerCase()}`] = String( sortedMeta[key] )
 		}
 
-		return newMetadata;
+		return newMetadata
 	}
-
 }
 
 module.exports = CloudStorageSigner

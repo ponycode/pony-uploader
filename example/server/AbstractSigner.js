@@ -1,18 +1,18 @@
 
 class AbstractSigner {
-
 	constructor( options = {} ){
 		this.options = { ...{
 			allowedFileTypes: ['image/png', 'image/jpg', 'image/jpeg'],
 			maxFileSizeBytes: 1024 * 1024 * 5
-		}, ...options }
+		},
+		...options }
 	}
 
 	_validateUpload( upload ){
 		if( !upload.key ) return new Error( 'upload.key is required' )
 
 		if( !upload.filesize ) return new Error( 'upload.filesize is required' )
-		if( !this._isProperFileSize( upload.filesize ) ) return new Error( 'Filesize exceeds maximum filesize of ' + options.maxFileSizeBytes + ': ' + upload.filesize )
+		if( !this._isProperFileSize( upload.filesize ) ) return new Error( 'Filesize exceeds maximum filesize of ' + this.options.maxFileSizeBytes + ': ' + upload.filesize )
 
 		if( !upload.filetype ) return new Error( 'upload.filetype is required' )
 		if( !this._isValidFileType( upload.filetype ) ) return new Error( 'Invalid file type: ' + upload.filetype )
@@ -29,7 +29,6 @@ class AbstractSigner {
 		filetype = filetype.toLowerCase()
 		return this.options.allowedFileTypes.indexOf( filetype ) !== -1
 	}
-
 }
 
 module.exports = AbstractSigner

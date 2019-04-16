@@ -4,15 +4,13 @@
 		<vue-image-upload
 			v-model="image"
 			ref="uploader"
-			w-signature-url="https://image-upload-manager-staging.firebaseapp.com/signature"
-			signature-url="http://localhost:5000/signature"
-			z-signature-url="https://images.phin.co/signature"
-			x-signature-url="/api/images/uploads/cloudStorage/signature"
-			y-signature-url="/api/images/uploads/s3/signature"
-			placeholder-image-url=""
-			track-image-status="true"
-			image-status-collection="images"
-			image-status-url="http://localhost:5000/index"
+      placeholder-image-url=""
+      gcp-signature-url="/api/images/uploads/cloudStorage/signature"
+			aws-signature-url="/api/images/uploads/s3/signature"
+      base-url="https://image-upload-manager-staging.firebaseapp.com"
+			signature-url="/signature"
+      image-index-url="/index"
+      :track-image-status=true
 			:width="200"
 			:height="200"
 			:imageWidth="400"
@@ -23,7 +21,7 @@
 
 <script>
 // TODO: update signature URL as external config
-import VueImageUpload from '../../../../client/vue-image-upload'
+import VueImageUpload from '../../../../src/components/pony-uploader'
 
 export default {
 	name: 'home',
