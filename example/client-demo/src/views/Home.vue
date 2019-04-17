@@ -5,7 +5,7 @@
 			v-model="image"
 			ref="uploader"
       placeholder-image-url=""
-			base-url="http://localhost:5000"
+			base-url="http://localhost:3000"
 			signature-url="/signature"
       index-url="/index"
       :track-image-status="true">
@@ -17,7 +17,6 @@
 </template>
 
 <script>
-// import VueImageUpload from '../../../../src/pony-uploader'
 import VueImageUpload from 'vue-pony-uploader'
 
 export default {
