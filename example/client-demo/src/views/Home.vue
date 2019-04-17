@@ -5,8 +5,8 @@
 			v-model="image"
 			ref="uploader"
       placeholder-image-url=""
-			base-url="http://localhost:5000"
-      gcp-remote-base-url="https://images-staging.phin.co"
+			local-base-url="http://localhost:5000"
+      base-url="https://images-staging.phin.co"
 			signature-url="/signature"
       index-url="/index"
       :track-image-status="true">
