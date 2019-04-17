@@ -137,8 +137,16 @@ export default {
         ) !== -1
       );
     },
-    persist(image) {
-      console.info(`persist image => ${image.key}`)
+    async persist(image) {
+			console.info(`persist image => ${image.key}`)
+			
+			const indexUrl = this.baseUrl + this.imageIndexUrl;
+			const persistImage = new TrackImage( indexUrl );
+			const persistImageResult = await persistImage.persist( image.key );
+
+			if ( persistImageResult.status_code !== 200 ) {
+				console.error( "Error persisting image: ", persistImageResult.status_text );
+			}
     },
     async upload(image) {
       this.state = "uploading";
@@ -190,11 +198,11 @@ export default {
           statusData.fileInfo = fileInfo;
 
           const indexUrl = this.baseUrl + this.imageIndexUrl;
-          const imageStatus = new ImageStatus( indexUrl, this.imageCollection );
+          const imageStatus = new TrackImage( indexUrl, this.imageCollection );
           const imageStatusResult = await imageStatus.add( statusData );
 
           if ( imageStatusResult.status_code !== 200 ) {
-            console.info( "Error adding image status: ", imageStatusResult.status_text );
+            console.info( "Error tracking image: ", imageStatusResult.status_text );
           }
         }
 
