@@ -17,7 +17,8 @@
 </template>
 
 <script>
-import VueImageUpload from '../../../../src/pony-uploader'
+// import VueImageUpload from '../../../../src/pony-uploader'
+import VueImageUpload from 'vue-pony-uploader'
 
 export default {
 	name: 'home',
