@@ -10,7 +10,7 @@ import minimist from 'minimist'
 const argv = minimist( process.argv.slice( 2 ) )
 
 const baseConfig = {
-	input: 'src/main.js',
+	input: 'src/index.js',
 	plugins: [
 		vue( {
 			css: true,

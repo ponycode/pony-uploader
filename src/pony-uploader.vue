@@ -1,15 +1,12 @@
 <script>
-import LocalImageLoader from "../js/LocalImageLoader.js";
-import ImageResize from "../js/ImageResize.js";
-import ImageUtils from "../js/ImageUtils.js";
-import TrackImage from "../js/TrackImage.js";
-import UploadSigner from "../js/UploadSigner.js";
-import S3Uploader from "../js/S3Uploader.js";
-import CloudStorageUploader from "../js/CloudStorageUploader.js";
-
-
-
-// import UploadIcon from './upload-icon'
+import LocalImageLoader from "./js/LocalImageLoader.js";
+import ImageResize from "./js/ImageResize.js";
+import ImageUtils from "./js/ImageUtils.js";
+import TrackImage from "./js/TrackImage.js";
+import UploadSigner from "./js/UploadSigner.js";
+import S3Uploader from "./js/S3Uploader.js";
+import CloudStorageUploader from "./js/CloudStorageUploader.js";
+import UploadIcon from './components/upload-icon.vue'
 
 // Referencing upload-icon caused some warnings during build
 // https://rollupjs.org/guide/en#warning-treating-module-as-external-dependency
@@ -17,7 +14,7 @@ import CloudStorageUploader from "../js/CloudStorageUploader.js";
 export default {
   name: "pony-uploader",
   components: {
-    // UploadIcon
+    UploadIcon
   },
   props: {
     value: {
@@ -281,7 +278,7 @@ export default {
         @change="_selectedFile"
         ref="fileInput"
       >
-      <!-- <upload-icon class="uploadIcon"></upload-icon> -->
+      <upload-icon class="uploadIcon"></upload-icon>
       <p v-if="!acceptDrop">Select Image</p>
       <p v-else>Drop Image</p>
     </div>
@@ -291,7 +288,7 @@ export default {
       </div>
 
       <div class="panel uploadOverlay" v-show="state === 'uploading'">
-        <!-- <upload-icon class="uploadIcon uploadIconWhite"></upload-icon> -->
+        <upload-icon class="uploadIcon uploadIconWhite"></upload-icon>
         <p>Uploading</p>
         <div class="progress">
           <div class="progressPercent" :style="{ width: uploadPercent + '%' }"></div>

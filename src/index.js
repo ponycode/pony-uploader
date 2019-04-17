@@ -1,5 +1,5 @@
 // Import vue component
-import component from './components/pony-uploader.vue'
+import component from './pony-uploader.vue'
 
 // install function executed by Vue.use()
 function install( Vue ) {

@@ -6,3 +6,14 @@
 	</g>
 </svg>
 </template>
+
+<script>
+export default {
+    name: 'uploadIcon',
+    props: {},
+    data () {
+        return {
+        }
+    },
+}
+</script>
