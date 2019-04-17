@@ -53,7 +53,7 @@ if ( !argv.format || argv.format === 'es' ) {
 	const esConfig = {
 		...baseConfig,
 		output: {
-			file: 'dist/vue-pony-uploader.esm.js',
+			file: 'dist/pony-uploader.esm.js',
 			format: 'esm',
 			exports: 'named'
 		},
@@ -75,7 +75,7 @@ if ( !argv.format || argv.format === 'umd' ) {
 		external,
 		output: {
 			compact: true,
-			file: 'dist/vue-pony-uploader.umd.js',
+			file: 'dist/pony-uploader.umd.js',
 			format: 'umd',
 			name: 'PonyUploader',
 			exports: 'named',
@@ -99,7 +99,7 @@ if ( !argv.format || argv.format === 'iife' ) {
 		external,
 		output: {
 			compact: true,
-			file: 'dist/vue-pony-uploader.min.js',
+			file: 'dist/pony-uploader.min.js',
 			format: 'iife',
 			name: 'PonyUploader',
 			exports: 'named',
