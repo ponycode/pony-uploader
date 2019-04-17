@@ -9,7 +9,7 @@
       gcp-remote-base-url="https://images-staging.phin.co"
 			signature-url="/signature"
       index-url="/index"
-      :track-image-status="false">
+      :track-image-status="true">
 		</vue-image-upload>
 		<div>
 			<button v-on:click="persistImage">Persist Image</button>
