@@ -1,4 +1,4 @@
-# pony-uploader
+# WIP!!! DON'T USE YET - vue-pony-uploader
 
 Pony uploader is a simple drag & drop image uploader which will send image directly to Amazon S3. This project contains a server component which will work well with express, a client side component, and a full example project. Pony-uploader uses several HTML5 features and will probably not work on older browsers.
 

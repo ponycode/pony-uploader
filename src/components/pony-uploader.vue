@@ -6,6 +6,9 @@ import TrackImage from "../js/TrackImage.js";
 import UploadSigner from "../js/UploadSigner.js";
 import S3Uploader from "../js/S3Uploader.js";
 import CloudStorageUploader from "../js/CloudStorageUploader.js";
+
+
+
 // import UploadIcon from './upload-icon'
 
 // Referencing upload-icon caused some warnings during build
