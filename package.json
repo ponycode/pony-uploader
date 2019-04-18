@@ -38,7 +38,9 @@
   "keywords": [
     "vue",
     "images",
-    "upload"
+		"upload",
+		"S3",
+		"CloudStorage"
   ],
   "homepage": "https://github.com/ponycode/pony-uploader",
   "dependencies": {},
