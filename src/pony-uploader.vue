@@ -27,7 +27,8 @@ export default {
     },
     signatureUrl: {
       type: String,
-      required: true
+			required: false,
+			default: "/signature"
     },
     trackImageStatus: {
       type: Boolean,
