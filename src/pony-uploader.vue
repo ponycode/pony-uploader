@@ -8,8 +8,6 @@ import S3Uploader from "./js/S3Uploader.js";
 import CloudStorageUploader from "./js/CloudStorageUploader.js";
 import UploadIcon from './components/upload-icon.vue'
 
-// Referencing upload-icon caused some warnings during build
-// https://rollupjs.org/guide/en#warning-treating-module-as-external-dependency
 
 export default {
   name: "pony-uploader",
@@ -17,10 +15,6 @@ export default {
     UploadIcon
   },
   props: {
-    value: {
-      type: Object,
-      required: false
-    },
     baseUrl: {
       type: String,
 			required: true
@@ -83,7 +77,7 @@ export default {
       dropZoneClass: "dropZoneDefault",
       acceptDrop: false,
       image: null,
-      uploadPercent: 0
+      uploadPercent: 0,
     };
   },
   methods: {
@@ -147,6 +141,17 @@ export default {
 
 			if ( persistImageResult.status_code !== 200 ) {
 				console.error( "Error persisting image: ", persistImageResult.status_text );
+			}
+		},
+		async desist(image) {
+			console.info(`desist image => ${image.key}`)
+			
+			const indexUrl = this.baseUrl + this.imageIndexUrl;
+			const trackImage = new TrackImage( indexUrl );
+			const desistImageResult = await trackImage.desist( image.key );
+
+			if ( desistImageResult.status_code !== 200 ) {
+				console.error( "Error desisting image: ", desistImageResult.status_text );
 			}
     },
     async upload(image) {

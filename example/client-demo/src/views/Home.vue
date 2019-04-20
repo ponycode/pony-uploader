@@ -5,7 +5,7 @@
 			v-model="image"
 			ref="uploader"
       placeholder-image-url=""
-			base-url="http://localhost:3000"
+			:base-url="base_url"
 			signature-url="/signature"
       index-url="/index"
       :track-image-status="true">
@@ -26,13 +26,18 @@ export default {
 	},
 	data () {
 		return {
-			image: null
+			image: null,
+			base_url: 'http://localhost:9000'
 		}
 	},
 	methods: {
 		persistImage: function () {
 			console.info('persist image called')
 			this.$refs.uploader.persist(this.image);
+		},
+		desistImage: function () {
+			console.info('desist image called')
+			this.$refs.uploader.desist(this.image);
     }
 	}
 }
