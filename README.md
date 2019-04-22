@@ -3,6 +3,12 @@
 
 Pony uploader is a simple drag & drop image uploader which will send image directly to Amazon S3. This project contains a server component which will work well with express, a client side component, and a full example project. Pony-uploader uses several HTML5 features and will probably not work on older browsers.
 
+<p align="left">
+    <a href="https://www.npmjs.com/package/vue-pony-uploader"><img src="https://img.shields.io/npm/v/vue-pony-uploader.svg" alt="NPM Version"></a>
+    <a href="https://www.npmjs.com/package/vue-pony-uploader"><img src="https://img.shields.io/npm/dm/vue-pony-uploader.svg" alt="NPM Downloads"></a>
+    <a href="http://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+</p>
+
 
 ## Getting Started
 Clone the repo [https://github.com/ponycode/pony-uploader.git](https://github.com/ponycode/pony-uploader.git) and run `npm install`.
@@ -11,15 +17,15 @@ Clone the repo [https://github.com/ponycode/pony-uploader.git](https://github.co
 $ git clone https://github.com/ponycode/pony-uploader
 $ cd pony-uploader
 $ npm install
-$ cd example/client-demo
+$ cd example/server
 $ npm install
-$ npm run serve
-$ cd.. && cd server
+$ npm start
+$ cd .. && cd client-demo
 $ npm install
-$ node server.js
+$ npm run serve 
 ```
 
-NOTE: The example server provided only has the index endpoints stubbed out. It is up to you to implement should you want to track whether the image ends up getting used or will become stale.
+`NOTE:` The example server provided only has the index endpoints stubbed out. It is up to you to implement them should you want to track whether the image ends up getting used or will become stale.
 
 # Picking the client apart
 The client is made of 3 components: an image resizer, an uploader, and a jQuery plugin. If you don't wish to use the HTML & CSS provided
@@ -33,11 +39,11 @@ by pony-uploader, you can use the image resizer and uploader independently.
 
 ### The image resizer
 
-* resizeFile( file, maxWidth, maxHeight, callback ) - This method takes an HTML file object
+* `resizeFile( file, maxWidth, maxHeight, callback )` - This method takes an HTML file object
 
 ### The jQuery plugin
 
-* ponyUpload() - This method can be called on your .dropZone element. It will wire the drag & drop events, and expect to handle the state changes as files are uploaded. Your .dropZone element
+* `ponyUpload()` - This method can be called on your .dropZone element. It will wire the drag & drop events, and expect to handle the state changes as files are uploaded. Your .dropZone element
 must have a `data-signUrl` which tells the plugin what URL to call to get a signed upload url. This route will be mostly handled by pony-uploader.
 
 ```html
