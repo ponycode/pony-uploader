@@ -12,12 +12,13 @@
 		</vue-image-upload>
 		<div>
 			<button v-on:click="persistImage">Persist Image</button>
+			<button v-on:click="desistImage">Desist Image</button>
 		</div>
 	</div>
 </template>
 
 <script>
-import VueImageUpload from 'vue-pony-uploader'
+import VueImageUpload from '../../../../src/pony-uploader'
 
 export default {
 	name: 'home',
@@ -27,7 +28,7 @@ export default {
 	data () {
 		return {
 			image: null,
-			base_url: 'http://localhost:9000'
+			base_url: 'https://localhost:3000'
 		}
 	},
 	methods: {
