@@ -212,9 +212,7 @@ export default {
           }
         }
 
-        console.log("Image uploaded: ", result);
         this.$emit("input", result);
-
         this.image = null;
       } catch (e) {
 				this._clearImage();
