@@ -34,7 +34,7 @@ export default {
       required: false,
       default: "images"
     },
-    imageIndexUrl: {
+    indexUrl: {
       type: String,
       required: false,
       default: "/index"
@@ -135,23 +135,23 @@ export default {
     async persist(image) {
 			console.info(`persist image => ${image.key}`)
 			
-			const indexUrl = this.baseUrl + this.imageIndexUrl;
-			const persistImage = new TrackImage( indexUrl );
-			const persistImageResult = await persistImage.persist( image.key );
+			const _indexUrl = this.baseUrl + this.indexUrl;
+			const _persistImage = new TrackImage( _indexUrl );
+			const _persistImageResult = await _persistImage.persist( image.key );
 
-			if ( persistImageResult.status_code !== 200 ) {
-				console.error( "Error persisting image: ", persistImageResult.status_text );
+			if ( _persistImageResult.status_code !== 200 ) {
+				console.error( "Error persisting image: ", _persistImageResult.status_text );
 			}
 		},
 		async desist(image) {
 			console.info(`desist image => ${image.key}`)
 			
-			const indexUrl = this.baseUrl + this.imageIndexUrl;
-			const trackImage = new TrackImage( indexUrl );
-			const desistImageResult = await trackImage.desist( image.key );
+			const _indexUrl = this.baseUrl + this.indexUrl;
+			const _trackImage = new TrackImage( indexUrl );
+			const _desistImageResult = await _trackImage.desist( image.key );
 
-			if ( desistImageResult.status_code !== 200 ) {
-				console.error( "Error desisting image: ", desistImageResult.status_text );
+			if ( _desistImageResult.status_code !== 200 ) {
+				console.error( "Error desisting image: ", _desistImageResult.status_text );
 			}
     },
     async upload(image) {
@@ -200,15 +200,15 @@ export default {
         );
 
         if (result && this.trackImageStatus) {
-          let statusData = result;
-          statusData.fileInfo = fileInfo;
+          let _statusData = result;
+          _statusData.fileInfo = fileInfo;
 
-          const indexUrl = this.baseUrl + this.imageIndexUrl;
-          const imageStatus = new TrackImage( indexUrl, this.imageCollection );
-          const imageStatusResult = await imageStatus.add( statusData );
+          const _indexUrl = this.baseUrl + this.indexUrl;
+          const _imageStatus = new TrackImage( _indexUrl, this.imageCollection );
+          const _imageStatusResult = await _imageStatus.add( _statusData );
 
-          if ( imageStatusResult.status_code !== 200 ) {
-            console.info( "Error tracking image: ", imageStatusResult.status_text );
+          if ( _imageStatusResult.status_code !== 200 ) {
+            console.info( "Error tracking image: ", _imageStatusResult.status_text );
           }
         }
 
