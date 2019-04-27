@@ -15,6 +15,10 @@ export default {
     UploadIcon
   },
   props: {
+		value: {
+			type: Object,
+			required: false
+		},
     baseUrl: {
       type: String,
 			required: true
