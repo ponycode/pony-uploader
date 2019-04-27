@@ -5,10 +5,9 @@
 			v-model="image"
 			ref="uploader"
       placeholder-image-url=""
-			:base-url="base_url"
-			signature-url="/signature"
-      index-url="/index"
-      :track-image-status="true">
+			base-url="http://localhost:3000"
+			signature-url="/s3/signature"
+      :track-image-status="false">
 		</vue-image-upload>
 		<div>
 			<button v-on:click="persistImage">Persist Image</button>
@@ -27,8 +26,7 @@ export default {
 	},
 	data () {
 		return {
-			image: null,
-			base_url: 'https://localhost:3000'
+			image: null
 		}
 	},
 	methods: {
