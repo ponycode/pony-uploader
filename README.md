@@ -74,14 +74,10 @@ Follow the steps below to have the example Vue application and example server up
 ### Setup Amazon S3 or Google Cloud Storage
 `NOTE:` The example server is meant to be an example and should not be considered production ready. The `/signature` endpoint will fetch a signed url once you have provided your cloud credentials. However, the `/index` endpoints for optional image tracking is only stubbed out. It is up to you to implement them should you want to track whether the image ends up getting used or will become stale.
 
-
-### Setup Amazon S3 or Google Cloud Storage
-
+### Run
 ```bash
 $ git clone https://github.com/ponycode/pony-uploader
-$ cd pony-uploader
-$ npm install
-$ cd example/server
+$ cd pony-uploader/example/server
 $ npm install
 $ npm start
 $ cd .. && cd client-demo
