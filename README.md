@@ -1,5 +1,5 @@
 
-# WIP!!! DON'T USE YET - vue-pony-uploader
+# vue-pony-uploader
 
 <p align="left">
     <a href="https://www.npmjs.com/package/vue-pony-uploader"><img src="https://img.shields.io/npm/v/vue-pony-uploader.svg" alt="NPM Version"></a>
