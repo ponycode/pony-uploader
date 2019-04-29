@@ -1,0 +1,13 @@
+version: "3"
+services: 
+  web-client: 
+    build: ./client
+    ports: 
+      - "3001:8080"
+    entrypoint: "npm run serve"
+
+  web-server:
+    build: ./server
+    ports: 
+      - "3000:3000"
+    entrypoint: "npm start"
