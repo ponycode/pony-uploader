@@ -1,7 +1,6 @@
 node_modules
 .DS_Store
 .idea
-.grunt
+.env
 /.vscode
-/server/start.sh
-/server/pony-uploader-824979d2a049.json
+creds.json
