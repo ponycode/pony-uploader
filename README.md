@@ -78,13 +78,16 @@ Details on setting up your server can be found <a href="./example/server/readme.
 
 `NOTE:` The example server provides the functionality for obtaining a signed url from Amazon S3 or Google  provided only has the index endpoints stubbed out. It is up to you to implement them should you want to track whether the image ends up getting used or will become stale.
 
+#
 ### Run with Docker
 ```bash
 $ git clone https://github.com/ponycode/pony-uploader
 $ cd pony-uploader/example
 $ docker-compose up
 ```
+Navigate to [http://localhost:3001](http://localhost:3001)
 
+#
 ### Run without Docker
 ```bash
 $ git clone https://github.com/ponycode/pony-uploader
@@ -95,9 +98,9 @@ $ cd .. && cd client-demo
 $ npm install
 $ npm run serve 
 ```
+Navigate to [http://localhost:8080](http://localhost:8080)
 
-
-
+#
 ## License
 Copyright (c) 2015 Joshua Kennedy
 Licensed under the MIT license.
