@@ -5,9 +5,9 @@
 			v-model="image"
 			ref="uploader"
       placeholder-image-url=""
-			base-url="http://localhost:3000"
-			signature-url="/s3/signature"
-      :track-image-status="false">
+			base-url="http://localhost:5000"
+			image-collection="brands"
+      :track-image-status="true">
 		</vue-image-upload>
 		<div>
 			<button v-on:click="persistImage">Persist Image</button>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import VueImageUpload from 'vue-pony-uploader'
+import VueImageUpload from '../../../../src/pony-uploader'
 
 export default {
 	name: 'home',
@@ -26,7 +26,8 @@ export default {
 	},
 	data () {
 		return {
-			image: null
+			image: null,
+			baseUrl: process.env.VUE_APP_PONY_UPLOADER_HOST
 		}
 	},
 	methods: {

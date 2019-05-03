@@ -140,7 +140,7 @@ export default {
 			console.info(`persist image => ${image.key}`)
 			
 			const _indexUrl = this.baseUrl + this.indexUrl;
-			const _persistImage = new TrackImage( _indexUrl );
+			const _persistImage = new TrackImage( _indexUrl, this.imageCollection );
 			const _persistImageResult = await _persistImage.persist( image.key );
 
 			if ( _persistImageResult.status_code !== 200 ) {
@@ -151,7 +151,7 @@ export default {
 			console.info(`desist image => ${image.key}`)
 			
 			const _indexUrl = this.baseUrl + this.indexUrl;
-			const _trackImage = new TrackImage( indexUrl );
+			const _trackImage = new TrackImage( _indexUrl, this.imageCollection );
 			const _desistImageResult = await _trackImage.desist( image.key );
 
 			if ( _desistImageResult.status_code !== 200 ) {

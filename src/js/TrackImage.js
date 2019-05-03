@@ -27,7 +27,7 @@ class ImageIndex {
 		console.info( `image ref => ${ref}` )
 		const result = await Request.performJsonRequest( {
 			method: 'PUT',
-			url: `${this.imageIndexApiUrl}/${ref}`
+			url: `${this.imageIndexApiUrl}/${this.imageCollection}/${ref}`
 		} )
 
 		if( result.json ){
@@ -41,7 +41,7 @@ class ImageIndex {
 		console.info( `image ref => ${ref}` )
 		const result = await Request.performJsonRequest( {
 			method: 'DELETE',
-			url: `${this.imageIndexApiUrl}/${ref}`
+			url: `${this.imageIndexApiUrl}/${this.imageCollection}/${ref}`
 		} )
 
 		if( result.json ){
