@@ -16,7 +16,7 @@
     "build:umd": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format umd",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
-    "publish:public": "npm version && npm run build && npm publish --access public"
+    "publish:npm": "npm version && npm run build && npm publish --access public"
   },
   "repository": {
     "type": "git",
