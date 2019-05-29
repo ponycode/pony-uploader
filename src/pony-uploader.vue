@@ -19,6 +19,10 @@ export default {
 			type: Object,
 			required: false
 		},
+		publicUrl: {
+			type: String,
+			required: false
+		},
     baseUrl: {
       type: String,
 			required: true
@@ -163,6 +167,7 @@ export default {
       this.uploadPercent = 0;
 
       function appendDateToFilename(filename) {
+				filename = filename.replace(/\s/g,'-'); // replace space with '-'
         var dotIndex = filename.lastIndexOf(".");
         if (dotIndex === -1) {
           return filename + Date.now();
@@ -246,7 +251,7 @@ export default {
       if (this.value && this.value.publicUrl) return this.value.publicUrl;
       if (this.image && this.image.image) return this.image.image.src;
       return null;
-    }
+		}
   },
   watch: {
     value: {
