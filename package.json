@@ -1,6 +1,6 @@
 {
   "name": "vue-pony-uploader",
-  "version": "0.0.21",
+  "version": "0.0.23",
   "description": "Vue component for uploading images directly to Amazon S3 or Google Cloud Storage via a signed url. Optional config for tracking and persisting images and metadata (see ./example/server)",
   "main": "dist/pony-uploader.umd.js",
   "module": "dist/pony-uploader.esm.js",
