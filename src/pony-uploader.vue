@@ -164,7 +164,11 @@ export default {
     },
     async upload(image) {
       this.state = "uploading";
-      this.uploadPercent = 0;
+			this.uploadPercent = 0;
+			
+			function replaceSpecialChars(filename) {
+				return filename.normalize( 'NFD' ).replace( /[\u0300-\u036f]/g, '' );
+			}
 
       function appendDateToFilename(filename) {
 				filename = filename.replace(/\s/g,'-'); // replace space with '-'
@@ -184,7 +188,7 @@ export default {
       // https://stackoverflow.com/questions/42202370/error-400-when-accessing-firebase-storage-trying-to-get-file-url
       const fileInfo = {
         // foldername: 'chemicals',
-        filename: appendDateToFilename(image.file.name),
+        filename: appendDateToFilename(replaceSpecialChars(image.file.name)),
         filesize: image.file.size,
         filetype: image.file.type,
         metadata: image.metadata
