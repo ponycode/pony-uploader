@@ -135,7 +135,7 @@ export default {
     },
     isAllowedFileType(file) {
       return (
-        ["image/png", "image/jpg", "image/jpeg", "image/gif"].indexOf(
+        ["image/png", "image/jpg", "image/jpeg"].indexOf(
           file.type
         ) !== -1
       );
