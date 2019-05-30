@@ -44,7 +44,7 @@ class LocalImageLoader {
 		// hyphenated keys work best for consistency
 
 		const metadata = {}
-		metadata.filename = this.file.name
+		metadata.filename = this.file.name.normalize( 'NFD' ).replace( /[\u0300-\u036f]/g, '' ) // fix for non-ascii "Rendézvous"
 		metadata.width = this.image.width
 		metadata.height = this.image.height
 

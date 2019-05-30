@@ -5,8 +5,8 @@
 			v-model="image"
 			ref="uploader"
       placeholder-image-url=""
-			base-url="http://localhost:5000"
-			image-collection="brands"
+			:base-url="baseUrl"
+			image-collection="dev"
       :track-image-status="true">
 		</vue-image-upload>
 		<div>

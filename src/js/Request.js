@@ -20,8 +20,7 @@ class Request {
 		if( !xhr ) throw new Error( 'File uploads are not supported by this browser.' )
 
 		for( let header in request.headers ){
-			// eslint-disable-next-line no-control-regex
-			header.replace( /[^\x00-\x7F]/g, '' ) // fix for non-ascii "Rendézvous"
+			console.log( `${header} : ${request.headers[header]}` )
 			xhr.setRequestHeader( header, request.headers[header] )
 		}
 
