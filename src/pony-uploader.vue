@@ -8,6 +8,7 @@ import S3Uploader from "./js/S3Uploader.js";
 import CloudStorageUploader from "./js/CloudStorageUploader.js";
 import UploadIcon from './components/upload-icon.vue'
 
+let _value = null;
 
 export default {
   name: "pony-uploader",
@@ -17,7 +18,8 @@ export default {
   props: {
 		value: {
 			type: Object,
-			required: false
+			required: false,
+			default: _value
 		},
 		publicUrl: {
 			type: String,
@@ -85,7 +87,7 @@ export default {
       dropZoneClass: "dropZoneDefault",
       acceptDrop: false,
       image: null,
-      uploadPercent: 0,
+			uploadPercent: 0
     };
   },
   methods: {
@@ -114,7 +116,7 @@ export default {
       if (!this.isAllowedFileType(file)) {
         this.$emit(
           "error",
-          new Error(`Selected file must be a PNG, JPG, or GIF file.`)
+          new Error(`Selected file must be a PNG or JPG file.`)
         );
         return;
       }
@@ -245,9 +247,10 @@ export default {
     },
     _clearImage() {
       this.image = null;
-      this.value = null;
       this.state = "empty";
-      this.$emit("input", null);
+			// this.$emit("input", null);
+			this._value = null;
+			this.$refs.fileInput.value = null; // hack so user can load same image after delete
     }
   },
   computed: {
@@ -261,7 +264,8 @@ export default {
     value: {
       immediate: true,
       handler(val) {
-        if (val && val.publicUrl) {
+				this._value = val;
+        if (this._value && this._value.publicUrl) {
           this.state = "populated";
           return;
         }
@@ -290,7 +294,7 @@ export default {
     >
       <input
         type="file"
-        accept="image/png, image/jpeg, image/jpg, image/gif"
+        accept="image/png, image/jpeg, image/jpg"
         multiple="false"
         @change="_selectedFile"
         ref="fileInput"
