@@ -248,7 +248,6 @@ export default {
     _clearImage() {
       this.image = null;
       this.state = "empty";
-			// this.$emit("input", null);
 			this._value = null;
 			this.$refs.fileInput.value = null; // hack so user can load same image after delete
     }
