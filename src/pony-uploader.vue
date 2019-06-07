@@ -254,8 +254,11 @@ export default {
   },
   computed: {
     previewSrc() {
+			console.info(`previewSrc() value = ${this.value}`);
       if (this.value && this.value.publicUrl) return this.value.publicUrl;
-      if (this.image && this.image.image) return this.image.image.src;
+			if (this.image && this.image.image) return this.image.image.src;
+			console.info(`previewSrc() publicUrl = ${this.publicUrl}`);
+			if (this.publicUrl) return this.publicUrl;
       return null;
 		}
   },
@@ -263,11 +266,19 @@ export default {
     value: {
       immediate: true,
       handler(val) {
+				console.info(`handler() val = ${val}`);
 				this._value = val;
         if (this._value && this._value.publicUrl) {
           this.state = "populated";
           return;
-        }
+				}
+				
+				// assigned computed prop
+				if (this.publicUrl) {
+					this.state = "populated";
+					this._value = { publicUrl: this.publicUrl };
+					return;
+				}
         this.state = "empty";
       }
     }

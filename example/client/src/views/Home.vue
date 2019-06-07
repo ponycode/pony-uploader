@@ -4,7 +4,7 @@
 		<vue-image-upload
 			v-model="image"
 			ref="uploader"
-      placeholder-image-url=""
+      public-url="https://s3.amazonaws.com/phin-chemicalimages/lonza/785336405018.jpg"
 			:base-url="baseUrl"
 			image-collection="dev"
       :track-image-status="true">
