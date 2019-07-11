@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "staging": "VUE_APP_PONY_UPLOADER_HOST=https://images2-staging.phin.co npm run serve",
     "start": "npm run serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

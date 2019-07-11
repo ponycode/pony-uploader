@@ -6,7 +6,7 @@ import TrackImage from "./js/TrackImage.js";
 import UploadSigner from "./js/UploadSigner.js";
 import S3Uploader from "./js/S3Uploader.js";
 import CloudStorageUploader from "./js/CloudStorageUploader.js";
-import UploadIcon from './components/upload-icon.vue'
+import UploadIcon from "./components/upload-icon.vue";
 
 let _value = null;
 
@@ -16,23 +16,23 @@ export default {
     UploadIcon
   },
   props: {
-		value: {
-			type: Object,
-			required: false,
-			default: _value
-		},
-		publicUrl: {
-			type: String,
-			required: false
-		},
+    value: {
+      type: Object,
+      required: false,
+      default: _value
+    },
+    publicUrl: {
+      type: String,
+      required: false
+    },
     baseUrl: {
       type: String,
-			required: true
+      required: true
     },
     signatureUrl: {
       type: String,
-			required: false,
-			default: "/signature"
+      required: false,
+      default: "/signature"
     },
     trackImageStatus: {
       type: Boolean,
@@ -61,13 +61,11 @@ export default {
     },
     imageWidth: {
       type: Number,
-      required: false,
-      default: 200
+      required: false
     },
     imageHeight: {
       type: Number,
-      required: false,
-      default: 200
+      required: false
     },
     jpgQuality: {
       type: Number,
@@ -87,7 +85,7 @@ export default {
       dropZoneClass: "dropZoneDefault",
       acceptDrop: false,
       image: null,
-			uploadPercent: 0
+      uploadPercent: 0
     };
   },
   methods: {
@@ -123,57 +121,63 @@ export default {
 
       const loadedImage = await new LocalImageLoader(file).load();
 
-      const resizeOptions = {
-        width: this.imageWidth,
-        height: this.imageHeight,
-        jpgQuality: this.jpgQuality
-      };
+      if (this.imageWidth && this.imageHeight) {
+        const resizeOptions = {
+          width: this.imageWidth,
+          height: this.imageHeight,
+          jpgQuality: this.jpgQuality
+        };
 
-      this.image = await ImageResize.resizeLoadedImage(
-        loadedImage,
-        resizeOptions
-      );
-      this.upload(this.image);
+        this.image = await ImageResize.resizeLoadedImage(
+          loadedImage,
+          resizeOptions
+        );
+        this.upload(this.image);
+      } else {
+        this.upload(loadedImage);
+      }
     },
     isAllowedFileType(file) {
-      return (
-        ["image/png", "image/jpg", "image/jpeg"].indexOf(
-          file.type
-        ) !== -1
-      );
+      return ["image/png", "image/jpg", "image/jpeg"].indexOf(file.type) !== -1;
     },
     async persist(image) {
-			console.info(`persist image => ${image.key}`)
-			
-			const _indexUrl = this.baseUrl + this.indexUrl;
-			const _persistImage = new TrackImage( _indexUrl, this.imageCollection );
-			const _persistImageResult = await _persistImage.persist( image.key );
+      console.info(`persist image => ${image.key}`);
 
-			if ( _persistImageResult.status_code !== 200 ) {
-				console.error( "Error persisting image: ", _persistImageResult.status_text );
-			}
-		},
-		async desist(image) {
-			console.info(`desist image => ${image.key}`)
-			
-			const _indexUrl = this.baseUrl + this.indexUrl;
-			const _trackImage = new TrackImage( _indexUrl, this.imageCollection );
-			const _desistImageResult = await _trackImage.desist( image.key );
+      const _indexUrl = this.baseUrl + this.indexUrl;
+      const _persistImage = new TrackImage(_indexUrl, this.imageCollection);
+      const _persistImageResult = await _persistImage.persist(image.key);
 
-			if ( _desistImageResult.status_code !== 200 ) {
-				console.error( "Error desisting image: ", _desistImageResult.status_text );
-			}
+      if (_persistImageResult.status_code !== 200) {
+        console.error(
+          "Error persisting image: ",
+          _persistImageResult.status_text
+        );
+      }
+    },
+    async desist(image) {
+      console.info(`desist image => ${image.key}`);
+
+      const _indexUrl = this.baseUrl + this.indexUrl;
+      const _trackImage = new TrackImage(_indexUrl, this.imageCollection);
+      const _desistImageResult = await _trackImage.desist(image.key);
+
+      if (_desistImageResult.status_code !== 200) {
+        console.error(
+          "Error desisting image: ",
+          _desistImageResult.status_text
+        );
+      }
     },
     async upload(image) {
       this.state = "uploading";
-			this.uploadPercent = 0;
-			
-			function replaceSpecialChars(filename) {
-				return filename.normalize( 'NFD' ).replace( /[\u0300-\u036f]/g, '' );
-			}
+      this.uploadPercent = 0;
+
+      function replaceSpecialChars(filename) {
+        return filename.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      }
 
       function appendDateToFilename(filename) {
-				filename = filename.replace(/\s/g,'-'); // replace space with '-'
+        filename = filename.replace(/\s/g, "-"); // replace space with '-'
         var dotIndex = filename.lastIndexOf(".");
         if (dotIndex === -1) {
           return filename + Date.now();
@@ -219,26 +223,30 @@ export default {
           _statusData.fileInfo = fileInfo;
 
           const _indexUrl = this.baseUrl + this.indexUrl;
-          const _imageStatus = new TrackImage( _indexUrl, this.imageCollection );
-          const _imageStatusResult = await _imageStatus.add( _statusData );
+          const _imageStatus = new TrackImage(_indexUrl, this.imageCollection);
+          const _imageStatusResult = await _imageStatus.add(_statusData);
 
-          if ( _imageStatusResult.status_code !== 200 ) {
-            console.info( "Error tracking image: ", _imageStatusResult.status_text );
+          if (_imageStatusResult.status_code !== 200) {
+            console.info(
+              "Error tracking image: ",
+              _imageStatusResult.status_text
+            );
           }
         }
 
-        this.$emit("input", result);
-        this.image = null;
+        this.$emit( "imageAdded", result )
+        this.$emit( "input", result )
+        this.image = null
       } catch (e) {
-				this._clearImage();
-        console.error("Error uploading image", e); // TODO: handle error
+        this._clearImage()
+        console.error( "Error uploading image", e ) // TODO: handle error
       }
     },
     _uploaderForSignedUploadResult(signedUploadResult) {
-      if (signedUploadResult.service === "s3") {
-        return new S3Uploader();
-      } else if (signedUploadResult.service === "cloudStorage") {
-        return new CloudStorageUploader();
+      if ( signedUploadResult.service === "s3" ) {
+        return new S3Uploader()
+      } else if ( signedUploadResult.service === "cloudStorage" ) {
+        return new CloudStorageUploader()
       } else {
         throw new Error(
           `Unknown upload service: ${signedUploadResult.service}`
@@ -246,41 +254,51 @@ export default {
       }
     },
     _clearImage() {
-      this.image = null;
-      this.state = "empty";
-			this._value = null;
-			this.$refs.fileInput.value = null; // hack so user can load same image after delete
+      this.image = null
+      this.state = "empty"
+      this._value = null
+      this.$refs.fileInput.value = null // hack so user can load same image after delete
+
+      let url = null;
+      if (this.publicUrl) url = this.publicUrl;
+      if (this.value && this.value.publicUrl) url = this.value.publicUrl;
+      this.$emit("imageDeleted", url);
     }
   },
   computed: {
     previewSrc() {
       if (this.value && this.value.publicUrl) return this.value.publicUrl;
-			if (this.image && this.image.image) return this.image.image.src;
-			if (this.publicUrl) return this.publicUrl;
+      if (this.image && this.image.image) return this.image.image.src;
+      if (this.publicUrl) return this.publicUrl;
       return null;
-		}
+    }
   },
   watch: {
     value: {
       immediate: true,
       handler(val) {
-				this._value = val;
+        this._value = val;
         if (this._value && this._value.publicUrl) {
           this.state = "populated";
           return;
-				}
-				
-				// assigned computed prop
-				if (this.publicUrl) {
-					this.state = "populated";
-					this._value = { publicUrl: this.publicUrl };
-					return;
-				}
+        }
         this.state = "empty";
+      }
+    },
+    publicUrl: {
+      immediate: true,
+      handler(val) {
+        // assigned computed prop
+        if (val) {
+          this.state = "populated"
+          this._value = { publicUrl: val }
+          return;
+        }
+        this.state = "empty"
       }
     }
   }
-};
+}
 </script>
 
 <template>
@@ -305,14 +323,14 @@ export default {
         multiple="false"
         @change="_selectedFile"
         ref="fileInput"
-      >
+      />
       <upload-icon class="uploadIcon"></upload-icon>
       <p v-if="!acceptDrop">Select Image</p>
       <p v-else>Drop Image</p>
     </div>
     <div v-show="state !== 'empty'">
       <div class="panel previewPanel" ref="preview">
-        <img :src="previewSrc">
+        <img :src="previewSrc" />
       </div>
 
       <div class="panel uploadOverlay" v-show="state === 'uploading'">
@@ -337,7 +355,7 @@ export default {
               <path
                 d="M100,200 C44.771525,200 0,155.228475 0,100 C0,44.771525 44.771525,0 100,0 C155.228475,0 200,44.771525 200,100 C200,155.228475 155.228475,200 100,200 Z M100,78.7867966 L64.6446609,43.4314575 C58.7867966,37.5735931 49.2893219,37.5735931 43.4314575,43.4314575 C37.5735931,49.2893219 37.5735931,58.7867966 43.4314575,64.6446609 L78.7867966,100 L43.4314575,135.355339 C37.5735931,141.213203 37.5735931,150.710678 43.4314575,156.568542 C49.2893219,162.426407 58.7867966,162.426407 64.6446609,156.568542 L100,121.213203 L135.355339,156.568542 C141.213203,162.426407 150.710678,162.426407 156.568542,156.568542 C162.426407,150.710678 162.426407,141.213203 156.568542,135.355339 L121.213203,100 L156.568542,64.6446609 C162.426407,58.7867966 162.426407,49.2893219 156.568542,43.4314575 C150.710678,37.5735931 141.213203,37.5735931 135.355339,43.4314575 L100,78.7867966 Z"
                 id="cancel-button"
-              ></path>
+              />
             </g>
           </g>
         </svg>
