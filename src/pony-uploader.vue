@@ -9,6 +9,7 @@ import CloudStorageUploader from "./js/CloudStorageUploader.js";
 import UploadIcon from "./components/upload-icon.vue";
 
 let _value = null;
+let _publicUrl = null;
 
 export default {
   name: "pony-uploader",
@@ -23,7 +24,8 @@ export default {
     },
     publicUrl: {
       type: String,
-      required: false
+      required: false,
+      default: _publicUrl
     },
     baseUrl: {
       type: String,
@@ -254,22 +256,24 @@ export default {
       }
     },
     _clearImage() {
-      this.image = null
-      this.state = "empty"
-      this._value = null
-      this.$refs.fileInput.value = null // hack so user can load same image after delete
-
       let url = null;
       if (this.publicUrl) url = this.publicUrl;
       if (this.value && this.value.publicUrl) url = this.value.publicUrl;
+
+      this.image = null
+      this.state = "empty"
+      this._value = null
+      this._publicUrl = null
+      this.$refs.fileInput.value = null // hack so user can load same image after delete
+
       this.$emit("imageDeleted", url);
     }
   },
   computed: {
     previewSrc() {
-      if (this.value && this.value.publicUrl) return this.value.publicUrl;
+      if (this._value && this._value.publicUrl) return this._value.publicUrl;
       if (this.image && this.image.image) return this.image.image.src;
-      if (this.publicUrl) return this.publicUrl;
+      if (this._publicUrl) return this._publicUrl;
       return null;
     }
   },
@@ -287,14 +291,16 @@ export default {
     },
     publicUrl: {
       immediate: true,
-      handler(val) {
-        // assigned computed prop
-        if (val) {
+      handler(url) {
+        if (this._value && this._value.publicUrl) {
+          this.state = "populated";
+          return;
+        } else if (url) {
           this.state = "populated"
-          this._value = { publicUrl: val }
+          this._publicUrl = url
           return;
         }
-        this.state = "empty"
+        this.state = "empty";
       }
     }
   }
