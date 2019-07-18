@@ -254,15 +254,17 @@ export default {
       }
     },
     _clearImage() {
+      let url = null;
+      if (this.publicUrl) url = this.publicUrl;
+      if (this.value && this.value.publicUrl) url = this.value.publicUrl;
+
       this.image = null
       this.state = "empty"
       this._value = null
       this.$refs.fileInput.value = null // hack so user can load same image after delete
 
-      let url = null;
-      if (this.publicUrl) url = this.publicUrl;
-      if (this.value && this.value.publicUrl) url = this.value.publicUrl;
       this.$emit("imageDeleted", url);
+      this.$emit("input", null);
     }
   },
   computed: {
@@ -289,12 +291,11 @@ export default {
       immediate: true,
       handler(val) {
         // assigned computed prop
-        if (val) {
+        if (val && this.state === "empty") {
           this.state = "populated"
           this._value = { publicUrl: val }
           return;
         }
-        this.state = "empty"
       }
     }
   }
