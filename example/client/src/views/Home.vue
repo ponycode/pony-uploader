@@ -12,7 +12,8 @@
 			:imageWidth=200
 			:imageHeight=200
 			@imageAdded="imageAdded"
-			@imageDeleted="imageDeleted">
+			@imageDeleted="imageDeleted"
+			@imageClicked="openImage">
 		</vue-image-upload>
 		<div>
 			<button v-on:click="persistImage">Persist Image</button>
@@ -42,6 +43,9 @@ export default {
 		}
 	},
 	methods: {
+		openImage: function (url) {		
+			window.open(url, "_blank");		
+    },
 		persistImage: function () {
 			console.info( 'persist image called' )
 			this.$refs.uploader.persist( this.image )

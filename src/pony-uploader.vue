@@ -265,6 +265,9 @@ export default {
 
       this.$emit("imageDeleted", url);
       this.$emit("input", null);
+    },
+    _imageClicked() {
+      this.$emit("imageClicked", this._value.publicUrl);
     }
   },
   computed: {
@@ -331,7 +334,7 @@ export default {
     </div>
     <div v-show="state !== 'empty'">
       <div class="panel previewPanel" ref="preview">
-        <img :src="previewSrc" />
+        <img :src="previewSrc" @click="_imageClicked" />
       </div>
 
       <div class="panel uploadOverlay" v-show="state === 'uploading'">
