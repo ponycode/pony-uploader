@@ -11,6 +11,7 @@
       :track-image-status="false"
 			:imageWidth=200
 			:imageHeight=200
+			:disabled=true
 			@imageAdded="imageAdded"
 			@imageDeleted="imageDeleted"
 			@imageClicked="openImage">

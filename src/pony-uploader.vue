@@ -72,6 +72,11 @@ export default {
       required: false,
       default: 1
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     imageBackgroundColor: {
       type: String,
       required: false,
@@ -141,8 +146,6 @@ export default {
       return ["image/png", "image/jpg", "image/jpeg"].indexOf(file.type) !== -1;
     },
     async persist(image) {
-      console.info(`persist image => ${image.key}`);
-
       const _indexUrl = this.baseUrl + this.indexUrl;
       const _persistImage = new TrackImage(_indexUrl, this.imageCollection);
       const _persistImageResult = await _persistImage.persist(image.key);
@@ -155,8 +158,6 @@ export default {
       }
     },
     async desist(image) {
-      console.info(`desist image => ${image.key}`);
-
       const _indexUrl = this.baseUrl + this.indexUrl;
       const _trackImage = new TrackImage(_indexUrl, this.imageCollection);
       const _desistImageResult = await _trackImage.desist(image.key);
@@ -234,19 +235,19 @@ export default {
           }
         }
 
-        this.$emit( "imageAdded", result )
-        this.$emit( "input", result )
-        this.image = null
+        this.$emit("imageAdded", result);
+        this.$emit("input", result);
+        this.image = null;
       } catch (e) {
-        this._clearImage()
-        console.error( "Error uploading image", e ) // TODO: handle error
+        this._clearImage();
+        console.error("Error uploading image", e); // TODO: handle error
       }
     },
     _uploaderForSignedUploadResult(signedUploadResult) {
-      if ( signedUploadResult.service === "s3" ) {
-        return new S3Uploader()
-      } else if ( signedUploadResult.service === "cloudStorage" ) {
-        return new CloudStorageUploader()
+      if (signedUploadResult.service === "s3") {
+        return new S3Uploader();
+      } else if (signedUploadResult.service === "cloudStorage") {
+        return new CloudStorageUploader();
       } else {
         throw new Error(
           `Unknown upload service: ${signedUploadResult.service}`
@@ -258,10 +259,10 @@ export default {
       if (this.publicUrl) url = this.publicUrl;
       if (this.value && this.value.publicUrl) url = this.value.publicUrl;
 
-      this.image = null
-      this.state = "empty"
-      this._value = null
-      this.$refs.fileInput.value = null // hack so user can load same image after delete
+      this.image = null;
+      this.state = 'empty';
+      this._value = null;
+      this.$refs.fileInput.value = null; // hack so user can load same image after delete
 
       this.$emit("imageDeleted", url);
       this.$emit("input", null);
@@ -295,25 +296,30 @@ export default {
       handler(val) {
         // assigned computed prop
         if (val && this.state === "empty") {
-          this.state = "populated"
-          this._value = { publicUrl: val }
+          this.state = "populated";
+          this._value = { publicUrl: val };
           return;
         }
       }
     }
   }
-}
+};
 </script>
 
 <template>
+<div>
+  {{`state: ${state === 'empty'}`}}<br/>
+  {{`disabled: ${disabled}`}}<br/>
+  {{`show: ${!(state === 'empty' && disabled) || !disabled}`}}<br/>
   <div
+    v-show="!(state === 'empty' && disabled) || !disabled"
     class="ponyImage"
     :class="dropZoneClass"
     :style="{ width: width + 'px', height: height + 'px' }"
     ref="dropZone"
   >
     <div
-      v-show="state === 'empty'"
+      v-show="state === 'empty' && !disabled"
       class="panel dropPanel"
       @dragenter.prevent="_dragEnter"
       @dragleave.prevent="_dragLeave"
@@ -322,11 +328,11 @@ export default {
       @click="$refs.fileInput.click()"
     >
       <input
-        type="file"
+        type='file'
         accept="image/png, image/jpeg, image/jpg"
         multiple="false"
         @change="_selectedFile"
-        ref="fileInput"
+        ref='fileInput'
       />
       <upload-icon class="uploadIcon"></upload-icon>
       <p v-if="!acceptDrop">Select Image</p>
@@ -345,7 +351,7 @@ export default {
         </div>
       </div>
 
-      <a class="clearButton" v-show="state === 'populated'" @click="_clearImage">
+      <a class="clearButton" v-show="state === 'populated' && !disabled" @click="_clearImage">
         <svg
           width="200px"
           height="200px"
@@ -366,6 +372,7 @@ export default {
       </a>
     </div>
   </div>
+</div>
 </template>
 
 <style scoped lang="scss">
