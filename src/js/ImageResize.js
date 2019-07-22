@@ -10,7 +10,7 @@ class ImageResize {
 	}
 
 	static scaleAndRotateImage( loadedImage, options = {} ){
-		const orientation = ( loadedImage.exif ) ? loadedImage.exif.Orientation : 1
+		const orientation = ( loadedImage.exif ) ? loadedImage.exif.orientation : 1
 		const scaledDimensions = this.determineScaledDimensions( loadedImage, options )
 
 		const canvasWidth = options.width || scaledDimensions.width

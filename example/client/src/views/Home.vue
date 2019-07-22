@@ -1,17 +1,15 @@
 <template>
 	<div class="hello">
 		<h1>Vue-Image-Upload Demo</h1>
-		<!-- public-url="https://s3.amazonaws.com/phin-chemicalimages/lonza/785336405018.jpg" -->
 		<vue-image-upload
 			v-model="image"
 			ref="uploader"
 			:base-url="baseUrl"
-			:public-url="publicUrl"
 			image-collection="dev"
       :track-image-status="false"
 			:imageWidth=200
 			:imageHeight=200
-			:disabled=true
+			:disabled=false
 			@imageAdded="imageAdded"
 			@imageDeleted="imageDeleted"
 			@imageClicked="openImage">
@@ -34,7 +32,6 @@ export default {
 	data () {
 		return {
 			image: null,
-			publicUrl: "https://storage.googleapis.com/staging.pure-karma-245604.appspot.com/cartoon-brain-61563332520853.png",
 			baseUrl: process.env.VUE_APP_PONY_UPLOADER_HOST
 		}
 	},

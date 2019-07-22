@@ -307,10 +307,6 @@ export default {
 </script>
 
 <template>
-<div>
-  {{`state: ${state === 'empty'}`}}<br/>
-  {{`disabled: ${disabled}`}}<br/>
-  {{`show: ${!(state === 'empty' && disabled) || !disabled}`}}<br/>
   <div
     v-show="!(state === 'empty' && disabled) || !disabled"
     class="ponyImage"
@@ -372,7 +368,6 @@ export default {
       </a>
     </div>
   </div>
-</div>
 </template>
 
 <style scoped lang="scss">
