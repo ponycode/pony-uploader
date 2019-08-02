@@ -117,10 +117,7 @@ export default {
     },
     async _loadFile(file) {
       if (!this.isAllowedFileType(file)) {
-        this.$emit(
-          "error",
-          new Error(`Selected file must be a PNG or JPG file.`)
-        );
+        this.$emit("error", new Error(`Selected file must be a PNG or JPG file.`));
         return;
       }
 
@@ -151,10 +148,9 @@ export default {
       const _persistImageResult = await _persistImage.persist(image.key);
 
       if (_persistImageResult.status_code !== 200) {
-        console.error(
-          "Error persisting image: ",
-          _persistImageResult.status_text
-        );
+        errorCode = _persistImageResult.status_code;
+        errorText = _persistImageResult.status_text;
+        this.$emit("error", new Error(`Error persisting image: ${errorCode} ${errorText}`));
       }
     },
     async desist(image) {
@@ -163,10 +159,9 @@ export default {
       const _desistImageResult = await _trackImage.desist(image.key);
 
       if (_desistImageResult.status_code !== 200) {
-        console.error(
-          "Error desisting image: ",
-          _desistImageResult.status_text
-        );
+        errorCode = _desistImageResult.status_code;
+        errorText = _desistImageResult.status_text;
+        this.$emit("error", new Error(`Error removing image: ${errorCode} ${errorText}`));
       }
     },
     async upload(image) {
@@ -211,9 +206,7 @@ export default {
         const uploadSigner = new UploadSigner(signUrl);
 
         const signedUploadResult = await uploadSigner.signUpload(fileInfo);
-        const uploader = this._uploaderForSignedUploadResult(
-          signedUploadResult
-        );
+        const uploader = this._uploaderForSignedUploadResult(signedUploadResult);
         const blob = ImageUtils.imageToBlob(image.image, image.file.type);
 
         const result = await uploader.upload(
@@ -233,10 +226,9 @@ export default {
           const _imageStatusResult = await _imageStatus.add(_statusData);
 
           if (_imageStatusResult.status_code !== 200) {
-            console.info(
-              "Error tracking image: ",
-              _imageStatusResult.status_text
-            );
+            errorCode = _imageStatusResult.status_code;
+            errorText = _imageStatusResult.status_text;
+            this.$emit("error", new Error(`Error indexing image: ${errorCode} ${errorText}`));
           }
         }
 
@@ -245,7 +237,7 @@ export default {
         this.image = null;
       } catch (e) {
         this._clearImage();
-        console.error("Error uploading image", e); // TODO: handle error
+        this.$emit("error", new Error(`Error uploading image: ${e}`));
       }
     },
     _uploaderForSignedUploadResult(signedUploadResult) {
@@ -254,9 +246,7 @@ export default {
       } else if (signedUploadResult.service === "cloudStorage") {
         return new CloudStorageUploader();
       } else {
-        throw new Error(
-          `Unknown upload service: ${signedUploadResult.service}`
-        );
+        this.$emit("error", new Error(`Unknown upload service: ${signedUploadResult.service}`));
       }
     },
     _clearImage() {
