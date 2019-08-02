@@ -6,7 +6,7 @@
 			ref="uploader"
 			:base-url="baseUrl"
 			image-collection="dev"
-      :track-image-status="false"
+      :track-image-status="true"
 			:imageWidth=200
 			:imageHeight=200
 			:disabled=false
