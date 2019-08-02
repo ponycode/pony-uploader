@@ -174,17 +174,22 @@ export default {
       this.uploadPercent = 0;
 
       function replaceSpecialChars(filename) {
-        return filename.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        // info on supported chars - https://cloud.google.com/storage/docs/naming
+        filename = filename.normalize('NFD').replace(/[\u000A-\u000D]/g, '');
+        filename = filename.normalize('NFD').replace(/[\u0020-\u002F]/g, '');
+        filename = filename.normalize('NFD').replace(/[\u003A-\u0040]/g, '-');
+        filename = filename.normalize('NFD').replace(/[\u005B-\u0060]/g, '');
+        filename = filename.normalize("NFD").replace(/[\u0300-\u036f]/g, '');
+        return filename;
       }
 
       function appendDateToFilename(filename) {
-        filename = filename.replace(/\s/g, "-"); // replace space with '-'
         var dotIndex = filename.lastIndexOf(".");
         if (dotIndex === -1) {
-          return filename + Date.now();
+          return replaceSpecialChars(filename) + Date.now();
         } else {
           return (
-            filename.substring(0, dotIndex) +
+            replaceSpecialChars(filename.substring(0, dotIndex)) +
             Date.now() +
             filename.substring(dotIndex)
           );
@@ -195,7 +200,7 @@ export default {
       // https://stackoverflow.com/questions/42202370/error-400-when-accessing-firebase-storage-trying-to-get-file-url
       const fileInfo = {
         // foldername: 'chemicals',
-        filename: appendDateToFilename(replaceSpecialChars(image.file.name)),
+        filename: appendDateToFilename(image.file.name),
         filesize: image.file.size,
         filetype: image.file.type,
         metadata: image.metadata
