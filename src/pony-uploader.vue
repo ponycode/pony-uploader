@@ -7,6 +7,7 @@ import UploadSigner from "./js/UploadSigner.js";
 import S3Uploader from "./js/S3Uploader.js";
 import CloudStorageUploader from "./js/CloudStorageUploader.js";
 import UploadIcon from "./components/upload-icon.vue";
+import { decode } from "./js/decode-tiff/decode-tiff.min.js";
 
 let _value = null;
 
@@ -140,7 +141,7 @@ export default {
       }
     },
     isAllowedFileType(file) {
-      return ["image/png", "image/jpg", "image/jpeg"].indexOf(file.type) !== -1;
+      return ["image/png", "image/jpg", "image/jpeg", "image/tiff"].indexOf(file.type) !== -1;
     },
     async persist(image) {
       const _indexUrl = this.baseUrl + this.indexUrl;
