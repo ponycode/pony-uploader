@@ -7,7 +7,6 @@ import UploadSigner from "./js/UploadSigner.js";
 import S3Uploader from "./js/S3Uploader.js";
 import CloudStorageUploader from "./js/CloudStorageUploader.js";
 import UploadIcon from "./components/upload-icon.vue";
-import { decode } from "./js/decode-tiff/decode-tiff.min.js";
 
 let _value = null;
 
@@ -118,7 +117,7 @@ export default {
     },
     async _loadFile(file) {
       if (!this.isAllowedFileType(file)) {
-        this.$emit("error", new Error(`Selected file must be a PNG or JPG file.`));
+        this.$emit("error", new Error(`Selected file must be a PNG, TIFF, or JPG file.`));
         return;
       }
 
