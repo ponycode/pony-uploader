@@ -1,4 +1,7 @@
 /* eslint-disable valid-typeof */
+
+import Tiff from 'tiff.js'
+
 class ImageUtils {
 	static browserCanLoadImages(){
 		if( typeof atob === undefined || typeof Uint8Array === undefined || typeof Blob === undefined || typeof ArrayBuffer === undefined ){
@@ -9,6 +12,10 @@ class ImageUtils {
 
 	static fileIsJpeg( file ){
 		return file.type === 'image/jpg' || file.type === 'image/jpeg'
+	}
+
+	static fileIsTiff( file ){
+		return file.type === 'image/tiff' || file.type === 'image/tif'
 	}
 
 	static arrayBufferFromImage( image ){
@@ -55,6 +62,37 @@ class ImageUtils {
 
 	static imageToBlob( image, imageType ){
 		return this.dataUriToBlob( image.src, imageType )
+	}
+
+	static renameFileToJpeg( filename ) {
+		var dotIndex = filename.lastIndexOf( '.' )
+		if ( dotIndex > -1 ) {
+			return filename.substring( 0, dotIndex ) + '.jpg'
+		}
+		return filename
+	}
+
+	static tiffToJpeg( image, filename ) {
+		const _buffer = ImageUtils.dataUriToArrayBuffer( image )
+		const tiff = new Tiff( { buffer: _buffer } )
+
+		if ( tiff.width && tiff.height ) {
+			const canvas = tiff.toCanvas()
+			const jpeg = canvas.toDataURL( 'image/jpeg', 0.8 )
+			const renamed = this.renameFileToJpeg( filename )
+			return { jpeg: jpeg, filename: renamed }
+		}
+		return null
+	}
+
+	static copyObjectAsMutable( objToClone ) {
+		var objCopy = {}
+
+		for ( var propKey in objToClone ) {
+			objCopy[propKey] = objToClone[propKey]
+		}
+
+		return objCopy
 	}
 }
 
