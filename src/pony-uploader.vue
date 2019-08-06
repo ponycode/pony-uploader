@@ -7,7 +7,6 @@ import UploadSigner from "./js/UploadSigner.js";
 import S3Uploader from "./js/S3Uploader.js";
 import CloudStorageUploader from "./js/CloudStorageUploader.js";
 import UploadIcon from "./components/upload-icon.vue";
-import { decode } from "./js/decode-tiff/decode-tiff.min.js";
 
 let _value = null;
 
