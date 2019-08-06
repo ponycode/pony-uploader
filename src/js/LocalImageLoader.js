@@ -38,6 +38,8 @@ class LocalImageLoader {
 			result.name = convertedFile.name
 			result.size = convertedFile.size
 			result.file = convertedFile
+
+			this.file = convertedFile // replace original file for downstream processing
 		}
 
 		this.image = await this._createImageFromLocalFile( imageData, this.file )
