@@ -16,10 +16,29 @@ class LocalImageLoader {
 			file: this.file
 		}
 
-		if( !ImageUtils.browserCanLoadImages() ) return result
+		if ( !ImageUtils.browserCanLoadImages() ) return result
 
-		const imageData = await this._loadLocalFile( this.file )
-		if( !imageData ) return result
+		var imageData = await this._loadLocalFile( this.file )
+		if ( !imageData ) return result
+
+		// Chrome and Firefox don't support TIFF, convert to jpeg
+		if ( ImageUtils.fileIsTiff( this.file ) ) {
+			const { jpeg, filename } = ImageUtils.tiffToJpeg( imageData, this.file.name )
+			if ( !jpeg ) return result
+
+			const blob = ImageUtils.dataUriToBlob( jpeg, 'image/jpeg' )
+
+			var mutableFile = ImageUtils.copyObjectAsMutable( this.file )
+			mutableFile.name = filename
+			mutableFile.type = 'image/jpeg'
+
+			const convertedFile = new File( [blob], mutableFile.name, { type: mutableFile.type } )
+
+			imageData = jpeg
+			result.name = convertedFile.name
+			result.size = convertedFile.size
+			result.file = convertedFile
+		}
 
 		this.image = await this._createImageFromLocalFile( imageData, this.file )
 		if( !this.image ) return result
@@ -31,7 +50,7 @@ class LocalImageLoader {
 		try{
 			result.exif = this.exif = new ImageExifReader( this.image ).read()
 		}catch( e ){
-			console.error( `Error reading exif: ${e}` )
+			throw new Error( `Error reading exif: ${e}` )
 		}
 
 		result.metadata = this._buildMetadata()
@@ -82,7 +101,7 @@ class LocalImageLoader {
 	}
 
 	_createImageFromLocalFile( imageSrc, file ){
-		return new Promise( function( resolve, reject ){
+		return new Promise( function ( resolve, reject ) {
 			const image = new Image()
 
 			image.onload = function(){
