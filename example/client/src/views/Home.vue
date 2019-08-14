@@ -7,8 +7,10 @@
 			:base-url="baseUrl"
 			image-collection="dev"
       :track-image-status="true"
-			:imageWidth=200
-			:imageHeight=200
+			:width="124"
+			:height="124"
+			:imageWidth="1200"
+			:imageHeight="1200"
 			:disabled=false
 			@imageAdded="imageAdded"
 			@imageDeleted="imageDeleted"

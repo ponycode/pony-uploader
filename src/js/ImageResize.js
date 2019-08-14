@@ -61,23 +61,9 @@ class ImageResize {
 			maxHeight = options.height
 		}
 
-		if( image.width > maxWidth || image.height > maxHeight ){
-			const widthRatio = image.width / maxWidth
-			const heightRatio = image.height / maxHeight
+		const ratio = Math.min( maxWidth / newWidth, maxHeight / newHeight )
 
-			if( widthRatio < heightRatio ){
-				newWidth = image.width / heightRatio
-				newHeight = maxHeight
-			}else{
-				newWidth = maxWidth
-				newHeight = image.height / widthRatio
-			}
-		}
-
-		return {
-			width: Math.floor( newWidth ),
-			height: Math.floor( newHeight )
-		}
+		return { width: newWidth * ratio, height: newHeight * ratio }
 	}
 
 	static buildOrientedCanvas( width, height, orientation = 1 ){

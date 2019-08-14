@@ -2,7 +2,7 @@ import vue from 'rollup-plugin-vue'
 import buble from 'rollup-plugin-buble'
 import commonjs from 'rollup-plugin-commonjs'
 import replace from 'rollup-plugin-replace'
-import includePaths from 'rollup-plugin-includepaths'
+import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
 import { terser } from 'rollup-plugin-terser'
 import minimist from 'minimist'
@@ -12,6 +12,8 @@ const argv = minimist( process.argv.slice( 2 ) )
 const baseConfig = {
 	input: 'src/index.js',
 	plugins: [
+		babel(),
+		commonjs(),
 		vue( {
 			css: true,
 			compileTemplate: true,
@@ -19,7 +21,6 @@ const baseConfig = {
 				isProduction: true
 			}
 		} ),
-		includePaths( { paths: ['./src'] } ),
 		resolve( {
 			browser: true,
 			preferBuiltins: false
@@ -33,18 +34,19 @@ const baseConfig = {
 		} ),
 		replace( {
 			'process.env.NODE_ENV': JSON.stringify( 'production' )
-		} ),
-		commonjs()
+		} )
 	]
 }
 
 // UMD/IIFE shared settings: externals and output.globals
 // Refer to https://rollupjs.org/guide/en#output-globals for details
 const external = [
-	'Vue'
+	'Vue',
+	'tiff.js'
 ]
 const globals = {
-	vue: 'Vue'
+	'Vue': 'vue',
+	'tiff.js': 'Tiff'
 }
 
 // Customize configs for individual targets
@@ -52,10 +54,12 @@ const buildFormats = []
 if ( !argv.format || argv.format === 'es' ) {
 	const esConfig = {
 		...baseConfig,
+		external,
 		output: {
 			file: 'dist/pony-uploader.esm.js',
 			format: 'esm',
-			exports: 'named'
+			exports: 'named',
+			globals
 		},
 		plugins: [
 			...baseConfig.plugins,

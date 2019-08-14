@@ -320,7 +320,7 @@ export default {
     >
       <input
         type='file'
-        accept="image/png, image/jpeg, image/jpg"
+        accept="image/png, image/jpeg, image/jpg, image/tiff, image/tif"
         multiple="false"
         @change="_selectedFile"
         ref='fileInput'
