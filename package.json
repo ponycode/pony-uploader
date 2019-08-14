@@ -1,6 +1,6 @@
 {
   "name": "vue-pony-uploader",
-  "version": "0.0.41",
+  "version": "0.0.45",
   "description": "Vue component for uploading images directly to Amazon S3 or Google Cloud Storage via a signed url. Optional config for tracking and persisting images and metadata (see ./example/server)",
   "main": "dist/pony-uploader.umd.js",
   "module": "dist/pony-uploader.esm.js",
@@ -43,8 +43,11 @@
     "Cloud Storage"
   ],
   "homepage": "https://github.com/ponycode/pony-uploader",
-  "dependencies": {},
+  "dependencies": {
+    "tiff.js": "^1.0.0"
+  },
   "devDependencies": {
+    "@babel/core": "^7.5.5",
     "@vue/cli-service": "^3.6.0",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
@@ -59,11 +62,12 @@
     "minimist": "^1.2.0",
     "npm-auto-version": "^1.0.0",
     "rollup": "^1.10.0",
+    "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-buble": "^0.19.6",
     "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-includepaths": "^0.2.3",
     "rollup-plugin-node-globals": "^1.4.0",
-    "rollup-plugin-node-resolve": "^4.2.3",
+    "rollup-plugin-node-resolve": "^4.2.4",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-terser": "^4.0.4",
     "rollup-plugin-vue": "^5.0.0",

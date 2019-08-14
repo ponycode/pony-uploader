@@ -117,7 +117,7 @@ export default {
     },
     async _loadFile(file) {
       if (!this.isAllowedFileType(file)) {
-        this.$emit("error", new Error(`Selected file must be a PNG or JPG file.`));
+        this.$emit("error", new Error(`Selected file must be a PNG, TIFF, or JPG file.`));
         return;
       }
 
@@ -320,7 +320,7 @@ export default {
     >
       <input
         type='file'
-        accept="image/png, image/jpeg, image/jpg"
+        accept="image/png, image/jpeg, image/jpg, image/tiff, image/tif"
         multiple="false"
         @change="_selectedFile"
         ref='fileInput'
