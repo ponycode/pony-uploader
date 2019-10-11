@@ -1,14 +1,12 @@
 import Request from './Request'
 
 class ImageIndex {
-	constructor( imageIndexApiUrl, imageCollection ){
+	constructor( imageIndexApiUrl ){
 		this.imageIndexApiUrl = imageIndexApiUrl
-		this.imageCollection = imageCollection
 	}
 
 	async add( fileInfo ){
 		const obj = fileInfo
-		obj.collection = this.imageCollection
 
 		const result = await Request.performJsonRequest( {
 			method: 'POST',
@@ -24,10 +22,9 @@ class ImageIndex {
 	}
 
 	async persist( ref ){
-		console.info( `image ref => ${ref}` )
 		const result = await Request.performJsonRequest( {
 			method: 'PUT',
-			url: `${this.imageIndexApiUrl}/${this.imageCollection}/${ref}`
+			url: `${this.imageIndexApiUrl}/${this.bucket}/${ref}`
 		} )
 
 		if( result.json ){
@@ -37,11 +34,10 @@ class ImageIndex {
 		}
 	}
 
-	async desist( ref ){
-		console.info( `image ref => ${ref}` )
+	async remove( ref ){
 		const result = await Request.performJsonRequest( {
 			method: 'DELETE',
-			url: `${this.imageIndexApiUrl}/${this.imageCollection}/${ref}`
+			url: `${this.imageIndexApiUrl}/${this.bucket}/${ref}`
 		} )
 
 		if( result.json ){

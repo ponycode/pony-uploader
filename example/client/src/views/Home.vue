@@ -5,7 +5,6 @@
 			v-model="image"
 			ref="uploader"
 			:base-url="baseUrl"
-			image-collection="dev"
       :track-image-status="true"
 			:width="124"
 			:height="124"
@@ -16,10 +15,6 @@
 			@imageDeleted="imageDeleted"
 			@imageClicked="openImage">
 		</vue-image-upload>
-		<div>
-			<button v-on:click="persistImage">Persist Image</button>
-			<button v-on:click="desistImage">Desist Image</button>
-		</div>
 	</div>
 </template>
 
@@ -39,21 +34,15 @@ export default {
 	},
 	watch: {
 		image( value ) {
-			console.log( 'image added' )
+			if(value) {
+				console.log( 'image added' )
+			}
 		}
 	},
 	methods: {
 		openImage: function (url) {		
 			window.open(url, "_blank");		
     },
-		persistImage: function () {
-			console.info( 'persist image called' )
-			this.$refs.uploader.persist( this.image )
-		},
-		desistImage: function () {
-			console.info( 'desist image called' )
-			this.$refs.uploader.desist( this.image )
-		},
 		imageAdded( val ) {
       console.log( `image added` )
 		},

@@ -58,7 +58,7 @@ Since the component provides the ability to optionally track image metadata with
 |       base-url       |  String |      N/A     |    Yes   |
 |    signature-url     |  String |  /signature  |    No    |
 |       index-url      |  String |    /index    |    No    |
-|   image-collection   |  String |    images    |    No    |
+|         bucket       |  String |    images    |    No    |
 |  track-image-status  | Boolean |     false    |    No    |
 |         width        |  Number |      200     |    No    |
 |        height        |  Number |      200     |    No    |

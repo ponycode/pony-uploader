@@ -32,16 +32,6 @@ class CloudStorageSigner extends AbstractSigner {
 			.file( uploadInfo.key )
 			.getSignedUrl( options )
 
-		// publicUrl references Firebase. Minimum policy should be:
-		// service firebase.storage {
-		// 	match /b/{bucket}/o {
-		// 	  match /{allPaths=**} {
-		// 		allow read
-		// 		allow write: if request.auth != null;
-		// 	  }
-		// 	}
-		// }
-
 		return {
 			service: 'cloudStorage',
 			bucket: this.options.bucket,

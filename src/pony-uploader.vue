@@ -39,10 +39,13 @@ export default {
       required: false,
       default: false
     },
-    imageCollection: {
+    folder: {
       type: String,
-      required: false,
-      default: "images"
+      required: false
+    },
+    subfolder: {
+      type: String,
+      required: false
     },
     indexUrl: {
       type: String,
@@ -142,28 +145,6 @@ export default {
     isAllowedFileType(file) {
       return ["image/png", "image/jpg", "image/jpeg", "image/tiff"].indexOf(file.type) !== -1;
     },
-    async persist(image) {
-      const _indexUrl = this.baseUrl + this.indexUrl;
-      const _persistImage = new TrackImage(_indexUrl, this.imageCollection);
-      const _persistImageResult = await _persistImage.persist(image.key);
-
-      if (_persistImageResult.status_code !== 200) {
-        errorCode = _persistImageResult.status_code;
-        errorText = _persistImageResult.status_text;
-        this.$emit("error", new Error(`Error persisting image: ${errorCode} ${errorText}`));
-      }
-    },
-    async desist(image) {
-      const _indexUrl = this.baseUrl + this.indexUrl;
-      const _trackImage = new TrackImage(_indexUrl, this.imageCollection);
-      const _desistImageResult = await _trackImage.desist(image.key);
-
-      if (_desistImageResult.status_code !== 200) {
-        errorCode = _desistImageResult.status_code;
-        errorText = _desistImageResult.status_text;
-        this.$emit("error", new Error(`Error removing image: ${errorCode} ${errorText}`));
-      }
-    },
     async upload(image) {
       this.state = "uploading";
       this.uploadPercent = 0;
@@ -191,10 +172,9 @@ export default {
         }
       }
 
-      // foldername not working due to google url encode error. Need workaround.
-      // https://stackoverflow.com/questions/42202370/error-400-when-accessing-firebase-storage-trying-to-get-file-url
       const fileInfo = {
-        // foldername: 'chemicals',
+        folder: this.folder,
+        subfolder: this.subfolder,
         filename: appendDateToFilename(image.file.name),
         filesize: image.file.size,
         filetype: image.file.type,
@@ -222,7 +202,7 @@ export default {
           _statusData.fileInfo = fileInfo;
 
           const _indexUrl = this.baseUrl + this.indexUrl;
-          const _imageStatus = new TrackImage(_indexUrl, this.imageCollection);
+          const _imageStatus = new TrackImage(_indexUrl);
           const _imageStatusResult = await _imageStatus.add(_statusData);
 
           if (_imageStatusResult.status_code !== 200) {
@@ -250,16 +230,14 @@ export default {
       }
     },
     _clearImage() {
-      let url = null;
-      if (this.publicUrl) url = this.publicUrl;
-      if (this.value && this.value.publicUrl) url = this.value.publicUrl;
+      this.$emit("imageDeleted", this.value);
 
       this.image = null;
       this.state = 'empty';
       this._value = null;
       this.$refs.fileInput.value = null; // hack so user can load same image after delete
 
-      this.$emit("imageDeleted", url);
+      
       this.$emit("input", null);
     },
     _imageClicked() {

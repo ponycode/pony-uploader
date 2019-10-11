@@ -5,14 +5,15 @@ class UploadSigner {
 		this.signUploadApiUrl = signUploadApiUrl
 	}
 
-	async signUpload( fileInfo ){
+	async signUpload( fileInfo ) {
 		const result = await Request.performJsonRequest( {
 			method: 'PUT',
 			url: this.signUploadApiUrl,
 			json: fileInfo
 		} )
 
-		if( result.json && result.json.service && result.json.uploadUrl ){ // sanity checks
+		if ( result.json && result.json.service && result.json.uploadUrl ) { // sanity checks
+			console.log( JSON.stringify( result.json ) )
 			return result.json
 		}else{
 			throw new Error( `Error signing upload: invalid data returned: ${result.text}` )
